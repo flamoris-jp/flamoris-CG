@@ -24,6 +24,8 @@ FLAMORIS-CGは、**スクリプトでオブジェクトを作り、動かし、C
 
 詳しい構成は [architecture](docs/architecture.md)、段階的な試験は [roadmap](docs/roadmap.md)、Cinema実験からの引き継ぎ判断は [cinema-reuse](docs/cinema-reuse.md) を参照。
 
+**発想の原点:** [CG誕生の会話ログ：ちゃぶ台博物館](docs/research-notes/2026-10-31-flamoris-cg-origin-thread.md) に、GlyphのモーフィングからCG・AI-native研究・SVGの描画方式まで発展した会話の編集版を記録しています。原文引用と要約を区別し、仕様や実装の保証とは扱いません。
+
 ## 最初の実験: 球を動かす（Blender lab v0）
 
 実験用スクリプトの [hello_motion.json](examples/hello_motion.json) は、床と球を作り、球の位置をいくつかのキーフレームで変更します。**物理演算ではなく、指定した動きの再生**です。任意のPythonコードをJSONから実行しません。
