@@ -34,7 +34,14 @@ def main():
         assets = json.loads((project / 'obj/project.assets.json').read_text())
         notices = output / name / 'licenses'
         notices.mkdir(exist_ok=True)
-        for identity, library in assets['libraries'].items():
+        packages = dict(assets['libraries'])
+        # Runtime packs are downloadDependencies, not ordinary libraries.
+        for framework in assets['project']['frameworks'].values():
+            for dependency in framework.get('downloadDependencies', []):
+                version = dependency['version'].strip('[]').split(',')[0].strip()
+                identity = dependency['name'] + '/' + version
+                packages[identity] = dict(type='package', path=identity.lower())
+        for identity, library in packages.items():
             if library.get('type') != 'package':
                 continue
             for folder in assets['packageFolders']:
