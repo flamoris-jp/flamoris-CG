@@ -6,7 +6,7 @@
 
 This is intentionally **not** Cinema's film-wide authoring/AI planner and **not** Blender's replacement.
 
-\`\`\`text
+```text
 User / AI writes a bounded object-motion spec
        |
        v
@@ -22,13 +22,13 @@ Blender adapter    (bpy, creates meshes / keyframes / camera / light)
                                       |
                                       v
                                   Kachinco
-\`\`\`
+```
 
 No project-wide screenplay or director is required. CG can create an individual clip without Cinema.
 
 ## Prototype contract (not a final CG language)
 
-See \`examples/hello_motion.json\`: \`schema_version\`, \`fps\`, \`duration_frames\`, \`render\`, one camera, one or more lights, and a bounded list of primitives with optional translation keyframes. Coordinates use Blender's world axes (Z up), and frames are 1-based for this **isolated laboratory format**. This is **not** the Cinema v1 Scene/Take format: do not silently pass one format to the other.
+See `examples/hello_motion.json`: `schema_version`, `fps`, `duration_frames`, `render`, one camera, one or more lights, and a bounded list of primitives with optional translation keyframes. Coordinates use Blender's world axes (Z up), and frames are 1-based for this **isolated laboratory format**. This is **not** the Cinema v1 Scene/Take format: do not silently pass one format to the other.
 
 - Supported shapes: cube and UV sphere, with constant material colour.
 - Supported motion: explicit location keyframes (linear interpolation).
@@ -57,4 +57,4 @@ Decide later, with evidence, which operations stay delegated to Blender, which c
 
 ## Tests and evidence
 
-Python unit tests validate the data contract without Blender. A successful Blender preview requires a real run and inspection of \`.blend\` and PNG outputs; it is not implied by CI. When accepted, record the Blender version, output files, render device, exact command and visible result. See [roadmap](roadmap.md).
+Python unit tests validate the data contract without Blender. A successful Blender preview requires a real run and inspection of `.blend` and PNG outputs; it is not implied by CI. When accepted, record the Blender version, output files, render device, exact command and visible result. See [roadmap](roadmap.md).
