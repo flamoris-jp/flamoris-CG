@@ -28,10 +28,10 @@ This is an **experimental Blender lab**, not a shipped CG engine. The small stri
 
 ## Checks
 
-\`\`\`sh
+```sh
 python tools/validate_scene.py examples/hello_motion.json
 python -m unittest discover -s tests -v
-\`\`\`
+```
 
 A Blender test is separate and requires a real locally installed Blender. Do not treat CI as Blender acceptance.
 
