@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: flamoris-jp/flamoris-capture
-          ref: fb4d3b17513ab29e32a8c54ac366c246da205761
+          ref: 5a925018f3656964b59be34c65bca87abec81983
           path: flamoris-capture
       - uses: actions/setup-dotnet@v4
         with:

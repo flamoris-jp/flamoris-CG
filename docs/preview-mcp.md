@@ -23,6 +23,12 @@ dotnet test mcp/Flamoris.Cg.Preview.Tests -c Release
 dotnet publish mcp/Flamoris.Cg.Preview -c Release -r linux-x64 --self-contained true -o artifacts/preview
 ```
 
+For a complete bundle with the image CLI, builder source, helper, licenses and
+SHA-256 file receipt, run `python tools/publish_preview.py --capture-root
+/absolute/flamoris-capture --output /new/bundle --rid linux-x64`. It verifies the
+pinned Capture Git revision and refuses an existing output. Use reviewed, clean
+source checkouts; this executes normal trusted .NET builds, not remote user code.
+
 Use `win-x64` for Windows. The published directory includes the .NET runtime and
 Skia native dependencies; retain `licenses/` and the runtime/package notices.
 .NET SDK 10 is a build dependency, not a target-host installation requirement.
