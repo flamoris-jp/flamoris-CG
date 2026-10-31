@@ -6,6 +6,8 @@
 
 This is intentionally **not** Cinema's film-wide authoring/AI planner and **not** Blender's replacement.
 
+A second, equally important purpose is **researching how CG tools evolve when built for AI and human co-creation from the start**. We will investigate semantics, structured operations, observability, controlled revision and feedback, not assume that wrapping Blender in an LLM is an improvement. See [AI-native research charter](ai-native-research.md).
+
 ```text
 User / AI writes a bounded object-motion spec
        |

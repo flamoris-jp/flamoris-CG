@@ -2,6 +2,10 @@
 
 FLAMORIS-CG is a **script-driven CG clip producer**, a sibling of KineticTypo. **Cinema is paused** and owns any future work of film-wide scripts, project-wide intent and orchestration; do not revive it or create a duplicate AI director here. Read README and docs/architecture.md before editing.
 
+## Second purpose: AI-native CG research
+
+Besides making useful CG clips, this repository investigates **how CG tools themselves evolve when AI is a first-class collaborator**. Treat this as an experimental question, not as proof that natural-language automation or a generative tool is superior. Design small controlled tests of semantic operations, inspectable state, targeted edits, repeatability and human approval. Document both favorable and unfavorable results. Keep everything scoped to individual CG scenes/clips; do not implement Cinema's paused project-wide planner. Read [docs/ai-native-research.md](docs/ai-native-research.md).
+
 ## Current stage
 
 This is an **experimental Blender lab**, not a shipped CG engine. The small strict JSON spec and Blender builder have not been accepted on Blender hardware yet. Never claim a successful Blender render from a passing Python test.
