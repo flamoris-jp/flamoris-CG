@@ -25,9 +25,9 @@ FLAMORIS-CGは、**スクリプトでオブジェクトを作り、動かし、C
 
 実験用スクリプトの [hello_motion.json](examples/hello_motion.json) は、床と球を作り、球の位置をいくつかのキーフレームで変更します。**物理演算ではなく、指定した動きの再生**です。任意のPythonコードをJSONから実行しません。
 
-事前条件: Python 3.11+、Blender（別途インストール、実行可能な \`blender\` コマンド）、描画する場合は利用できるCPU環境。現時点でCIはPython仕様検証のみで、Blender実機テストではありません。
+事前条件: Python 3.11+、Blender（別途インストール、実行可能な `blender` コマンド）、描画する場合は利用できるCPU環境。現時点でCIはPython仕様検証のみで、Blender実機テストではありません。
 
-\`\`\`sh
+```sh
 # Blenderなしでも入力の検証ができる
 python tools/validate_scene.py examples/hello_motion.json
 python -m unittest discover -s tests -v
@@ -40,9 +40,9 @@ blender -b --python-exit-code 1 --python blender/build_scene.py -- --spec exampl
 
 # 全フレームをPNG連番で描く（処理時間と容量に注意）
 blender -b --python-exit-code 1 --python blender/build_scene.py -- --spec examples/hello_motion.json --output outputs/hello-frames --sequence
-\`\`\`
+```
 
-作成するフォルダーが既存なら安全のため失敗します。対応するオブジェクトは \`cube\` と \`uv_sphere\` に限定し、FPS、尺、数値範囲、キーフレーム数を制限します。Blenderがインストールされていなくても入力スキーマのユニットテストはできます。PNG連番をMP4にする工程は今後の実験対象です。
+作成するフォルダーが既存なら安全のため失敗します。対応するオブジェクトは `cube` と `uv_sphere` に限定し、FPS、尺、数値範囲、キーフレーム数を制限します。Blenderがインストールされていなくても入力スキーマのユニットテストはできます。PNG連番をMP4にする工程は今後の実験対象です。
 
 ## 目標と進め方
 
