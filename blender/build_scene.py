@@ -7,6 +7,8 @@ Example:
 Requires Blender's own bpy; no arbitrary Python from the input JSON is executed.
 """
 import argparse
+import hashlib
+from datetime import datetime, timezone
 import json
 import sys
 from pathlib import Path
@@ -130,6 +132,18 @@ def main():
         "artifacts": artifacts,
         "notes": "Keyframed motion; no physics, GPU selection, or encoded video.",
     }
+    if args.preview:
+        preview = output / "preview.png"
+        manifest["preview"] = {
+            "frame": scene.frame_current,
+            "camera": scene.camera.name,
+            "width": scene.render.resolution_x,
+            "height": scene.render.resolution_y,
+            "byte_length": preview.stat().st_size,
+            "sha256": hashlib.sha256(preview.read_bytes()).hexdigest(),
+            "spec_sha256": hashlib.sha256(json.dumps(spec, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
+            "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        }
     (output / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
@@ -138,3 +152,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

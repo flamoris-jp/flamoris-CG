@@ -8,7 +8,7 @@ This is a sequence of **acceptance gates**, not a delivery schedule.
 
 | Gate | Scope | Acceptance evidence | Status |
 | --- | --- | --- | --- |
-| 0. Blender laboratory | Strict scene JSON, 2 primitives, translation keyframes, camera/light, native .blend and optional PNGs | Python validation + actual Blender preview / saved file check | Prototype code introduced; Blender acceptance pending |
+| 0. Blender laboratory | Strict scene JSON, 2 primitives, translation keyframes, camera/light, native .blend and optional PNGs | Python validation + actual Blender preview / saved file check | Linux static preview + saved file + MCP image accepted; sequences remain unaccepted |
 | 1. Modeling experiments | Primitive transforms, mesh editing or procedural geometry via Blender; asset references | A scene can be changed by editing only the script | Not started |
 | 2. Physics experiments | Blender rigid body, gravity/contact/bounce; explicitly separate driven vs simulated motion | A controlled repeatable drop and recorded outcome | Not started |
 | 3. Clip producer | Frame range/fps, validated PNG/MP4 output, optional alpha, manifest, robust errors | Kachinco can import and edit the generated clip | Not started |
@@ -19,7 +19,7 @@ This is a sequence of **acceptance gates**, not a delivery schedule.
 
 Create a floor and a red UV sphere, move the sphere across a simple path, save a Blender native project, and request a preview PNG. The motion is **keyframe animation**, not physics. Then edit a keyframe and regenerate into a different output folder.
 
-Run once on an installed Blender (target environment has historically used 5.2.3 LTS, but this repository has **not** accepted that result yet). Record visual correctness and errors. Do not make CI green stand in for a Blender acceptance.
+Static red/blue previews were accepted on Linux headless Blender 5.2.3 LTS on 2026-11-01; see [evidence and limits](preview-acceptance.md). Complete sequences and physical Windows rendering remain separate. Do not make CI green stand in for hardware acceptance.
 
 ## Out of scope now
 
@@ -30,7 +30,7 @@ Run once on an installed Blender (target environment has historically used 5.2.3
 
 ## Next acceptance gate after bootstrap
 
-Run the documented example from README on a controlled Blender installation, inspect the outputs, then decide whether the first improvement is modeling operations, rigid-body behavior or clip encoding. Avoid building all three before the first verified clip.
+The static preview/observation baseline is accepted. Decide whether the next bounded experiment is modeling operations, rigid-body behavior or clip encoding; do not infer motion-sequence acceptance from a single frame.
 
 ## Research track (independent of feature milestones)
 
@@ -40,3 +40,8 @@ Run the documented example from README on a controlled Blender installation, ins
 - **Not yet implemented:** an AI agent planner, scene self-repair loop, production AI-native editor or autonomous rendering service.
 
 This track studies **single CG scenes / clips**. Multi-tool project-wide planning remains Cinema's responsibility and is paused.
+
+
+## 2026-11-01: saved-preview observation accepted
+
+Linux headless static preview generation and real MCP PNG/JPEG image disclosure are now verified separately from Python CI. See [acceptance scope](preview-acceptance.md). This supersedes earlier untested-static-preview status only; other hardware/sequence/GPU milestones remain separate.

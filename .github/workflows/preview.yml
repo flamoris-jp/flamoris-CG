@@ -1,0 +1,48 @@
+name: CG preview MCP
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  preview:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+            ext: ''
+          - os: windows-latest
+            rid: win-x64
+            ext: '.exe'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: cg
+      - uses: actions/checkout@v4
+        with:
+          repository: flamoris-jp/flamoris-capture
+          ref: fb4d3b17513ab29e32a8c54ac366c246da205761
+          path: flamoris-capture
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test managed references and Core disclosure
+        working-directory: cg
+        run: dotnet test mcp/Flamoris.Cg.Preview.Tests -c Release
+      - name: Publish standalone read-only adapter
+        working-directory: cg
+        run: dotnet publish mcp/Flamoris.Cg.Preview -c Release -r ${{ matrix.rid }} --self-contained true -o artifacts/preview
+      - run: python -m pip install 'mcp>=1.28,<2'
+      - name: Test actual Core pipe and stdio using official MCP client
+        working-directory: cg
+        run: python tools/test_preview_stdio.py --executable artifacts/preview/Flamoris.Cg.Preview${{ matrix.ext }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cg-preview-${{ matrix.rid }}
+          path: cg/artifacts/preview/

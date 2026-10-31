@@ -1,0 +1,6 @@
+{
+  "capture_repository": "flamoris-jp/flamoris-capture",
+  "capture_commit": "fb4d3b17513ab29e32a8c54ac366c246da205761",
+  "mcp_core": "1.4.0",
+  "skiasharp": "3.119.4"
+}
