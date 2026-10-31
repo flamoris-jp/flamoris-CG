@@ -45,6 +45,10 @@ These are possible tests, not a commitment to implement every feature now. Do no
 
 **Cinema (paused) would own project-wide story, intent, orchestration across CG, KineticTypo, Generation and Kachinco.** No film director, project-level scenario engine or automatic multi-tool workflow belongs in CG just because the experiment is AI-native.
 
+## Future curiosity (not a current research target)
+
+数学や物理そのものを **AI前提で設計し直すと、計算やシミュレーションの道具はどう進化するのか** という発想も面白い。将来 `flamoris-maths` や `flamoris-physics` のような方向を考える余地はあるが、**現時点ではCGの研究対象・開発計画・新規リポジトリ作成予定には含めない**。着想としてここに記録するだけにする。
+
 ## Guardrails
 
 - Prefer safe structured operations over arbitrary untrusted Blender Python.
