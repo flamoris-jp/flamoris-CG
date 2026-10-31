@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "fps": 24,
+  "duration_frames": 72,
+  "render": {
+    "width": 640,
+    "height": 360,
+    "samples": 16
+  },
+  "camera": {
+    "location": [
+      6,
+      -9,
+      5
+    ],
+    "target": [
+      0,
+      0,
+      0.3
+    ]
+  },
+  "lights": [
+    {
+      "location": [
+        -3,
+        -4,
+        8
+      ],
+      "energy": 1000
+    }
+  ],
+  "objects": [
+    {
+      "id": "floor",
+      "primitive": "cube",
+      "location": [
+        0,
+        0,
+        -0.3
+      ],
+      "scale": [
+        5,
+        5,
+        0.25
+      ],
+      "color": [
+        0.08,
+        0.1,
+        0.13
+      ]
+    },
+    {
+      "id": "red_ball",
+      "primitive": "uv_sphere",
+      "location": [
+        -2,
+        0,
+        1.1
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "color": [
+        0.82,
+        0.06,
+        0.09
+      ],
+      "keyframes": [
+        {
+          "frame": 1,
+          "location": [
+            -2,
+            0,
+            1.1
+          ]
+        },
+        {
+          "frame": 24,
+          "location": [
+            -0.6,
+            0,
+            1.8
+          ]
+        },
+        {
+          "frame": 48,
+          "location": [
+            1,
+            0,
+            0.6
+          ]
+        },
+        {
+          "frame": 72,
+          "location": [
+            2,
+            0,
+            1.1
+          ]
+        }
+      ]
+    }
+  ]
+}

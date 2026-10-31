@@ -1,69 +1,38 @@
 # AGENTS.md
 
-This repository is part of the FLAMORIS ecosystem.
+FLAMORIS-CG is a **script-driven CG clip producer**, a sibling of KineticTypo. **Cinema is paused** and owns any future work of film-wide scripts, project-wide intent and orchestration; do not revive it or create a duplicate AI director here. Read README and docs/architecture.md before editing.
 
-AI agents and human contributors should inspect the current repository before making substantial changes. Do not assume that setup, build, deployment, service names, paths, configuration, or architecture match another FLAMORIS repository.
+## Current stage
 
-## Core principles
+This is an **experimental Blender lab**, not a shipped CG engine. The small strict JSON spec and Blender builder have not been accepted on Blender hardware yet. Never claim a successful Blender render from a passing Python test.
 
-1. **Current implementation is authoritative**
-   - Read the repository documentation, configuration, tests, and relevant source before changing behavior.
-   - Do not invent repository-specific commands, paths, services, or configuration.
+## Boundaries
 
-2. **Keep responsibility clear**
-   - Keep this repository focused on its documented purpose.
-   - Preserve application and service ownership boundaries.
-   - Do not create a second source of truth for state owned elsewhere.
+- CG: object identity, animation instructions, scene/clip output requests.
+- Blender: mesh geometry, physics, lighting and actual rendering.
+- Glyph: glyph geometry, morphing and provenance. Reuse its own APIs; do not fork its algorithms.
+- KineticTypo: text animation.
+- Kachinco: timeline/audio/editing. Do not mutate its projects outside its supported interface.
+- Cinema: historical separate scene/take experiments and future project controller; leave paused.
 
-3. **Reuse deliberately**
-   - Check existing FLAMORIS shared packages and repositories before duplicating common infrastructure.
-   - Reuse code only when the dependency direction and ownership boundary remain clear.
-   - Avoid speculative abstractions for requirements that do not yet exist.
+## Engineering practice
 
-4. **Security and privacy are architectural requirements**
-   - Never commit or log secrets, credentials, tokens, private keys, or sensitive user data.
-   - Prefer least-privilege access and bounded resource use.
-   - Treat external input and remote responses as untrusted.
+1. Verify the repository's actual files, supported runtime and tests before edits. No assumed LIME/Mango/Blender paths, GPU devices, MCP URLs or service names.
+2. Make each experiment **small, scriptable and reproducible**. Record the spec, Blender version, command, artifacts and acceptance outcome.
+3. Keep scene JSON declarative, bounded, and strictly validated. Never execute user-provided Python, Python expressions, arbitrary Blender scripts, filesystem paths embedded in JSON or remote code.
+4. Render only with explicit user action and a **new** output folder. No surprise installations, GPU jobs, services or overwrites.
+5. Check licensing/provenance before introducing other repos' code, media, font, models or generated assets.
+6. Preserve Windows/Linux portability; prefer standard-library tests when Blender isn't installed.
+7. Compare Cinema's existing Blender bridge before copying functionality. Document a specific reason for any reimplementation or shared extraction.
+8. Always distinguish the intended future lightweight modeling/physics/rendering capability from today's Blender-backed research.
 
-5. **Stable behavior over cleverness**
-   - Prefer explicit, testable contracts and straightforward implementations.
-   - Preserve existing public behavior unless a change intentionally modifies it.
-   - Document externally visible behavior and compatibility impact.
+## Checks
 
-6. **Documentation must track reality**
-   - Mark the current implementation/status explicitly when a repository has both shipped behavior and future phases.
-   - Do not describe implemented behavior as merely planned, and do not describe planned behavior as already shipped.
-   - Keep public architecture portable. Machine names, private topology, credentials, and deployment-only paths belong in private deployment documentation rather than public repository defaults.
+\`\`\`sh
+python tools/validate_scene.py examples/hello_motion.json
+python -m unittest discover -s tests -v
+\`\`\`
 
-7. **AI-native, human-authoritative**
-   - AI-assisted development is welcome.
-   - Humans remain responsible for reviewing behavior, security, licensing, and compatibility.
+A Blender test is separate and requires a real locally installed Blender. Do not treat CI as Blender acceptance.
 
-## Before implementing a substantial change
-
-- read this file and README.md;
-- identify **what this repository is, what it owns, what it does not own, its current status, and where it fits in FLAMORIS**;
-- read the [organization map](https://github.com/flamoris-jp/.github) and the relevant family map when cross-repository context matters;
-- read relevant docs, Issues, and Pull Requests;
-- inspect current implementation and tests;
-- identify the source of truth and dependency direction;
-- check whether reusable FLAMORIS infrastructure already exists;
-- verify repository-specific setup and deployment details instead of guessing.
-
-## Testing
-
-Add or update tests where practical.
-
-Prefer deterministic tests and explicit contracts. When behavior differs by platform, runtime, provider, or environment, document the supported boundary and test the relevant cases.
-
-## Licensing
-
-Unless stated otherwise, code in this repository is licensed under Apache License 2.0.
-
-Do not add third-party code, models, model weights, datasets, fonts, media, or generated assets unless their licenses are compatible and clearly documented.
-
-## Support
-
-FLAMORIS does not provide guaranteed individual support.
-
-Use the repository documentation, Issues, tests, logs, and source code as primary references when diagnosing problems.
+Code license: Apache-2.0. Keep credentials, private deployments, and machine-specific configuration out of this public repository.
