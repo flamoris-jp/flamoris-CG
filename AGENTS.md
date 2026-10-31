@@ -8,7 +8,7 @@ Besides making useful CG clips, this repository investigates **how CG tools them
 
 ## Current stage
 
-This is an **experimental Blender lab**, not a shipped CG engine. The small strict JSON spec and Blender builder have not been accepted on Blender hardware yet. Never claim a successful Blender render from a passing Python test.
+This is an **experimental Blender lab**, not a shipped CG engine. Linux headless Blender 5.2.3 LTS has accepted static preview generation and actual MCP image disclosure; see docs/preview-acceptance.md. This does not certify sequences, Windows hardware, arbitrary modeling or GPU jobs. Never claim a successful Blender render from a passing Python test.
 
 ## Boundaries
 
@@ -40,3 +40,4 @@ python -m unittest discover -s tests -v
 A Blender test is separate and requires a real locally installed Blender. Do not treat CI as Blender acceptance.
 
 Code license: Apache-2.0. Keep credentials, private deployments, and machine-specific configuration out of this public repository.
+

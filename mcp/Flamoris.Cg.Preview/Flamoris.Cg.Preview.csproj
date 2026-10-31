@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><Version>0.2.0</Version><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CaptureSourceRoot Condition="'$(CaptureSourceRoot)' == ''">../../../flamoris-capture</CaptureSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(CaptureSourceRoot)/src/Flamoris.Capture.Imaging/Flamoris.Capture.Imaging.csproj" />
+    <PackageReference Include="Flamoris.Mcp.Core" Version="1.4.0" />
+  </ItemGroup>
+</Project>

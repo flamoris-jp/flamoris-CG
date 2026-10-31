@@ -2,7 +2,7 @@
 
 **Script-driven object animation and CG clip production for FLAMORIS.**
 
-**Status: early Blender laboratory / 実験基盤。** まだ軽量CGエンジンではありません。Blender実機での本リポジトリの検証は未実施です。
+**Status: early Blender laboratory / 実験基盤。** まだ軽量CGエンジンではありません。Blender 5.2.3 LTSのLinux headlessで静止プレビュー生成とMCP画像取得を実機確認済みです（[範囲と証跡](docs/preview-acceptance.md)）。
 
 FLAMORIS-CGは、**スクリプトでオブジェクトを作り、動かし、CGクリップとして出力する**制作ツールを目指します。文字を動かすKineticTypoと同じ階層で、オブジェクトを扱うことに集中します。
 
@@ -15,7 +15,7 @@ FLAMORIS-CGは、**スクリプトでオブジェクトを作り、動かし、C
 ## 何者か・何を持つか
 
 - **CGの責任:** オブジェクトの定義と参照、動作スクリプト、時間、シーン構築、描画依頼、生成したクリップと付随データ。
-- **今の実装:** 単純なJSON実験仕様の検証、Blender向けのプリミティブ・キーフレーム・カメラ・照明設定、および静止プレビュー / PNG連番 / ネイティブ .blend 出力の実験用スクリプト。
+- **今の実装:** 単純なJSON実験仕様の検証、Blender向けのプリミティブ・キーフレーム・カメラ・照明設定、および静止プレビュー / PNG連番 / ネイティブ .blend 出力の実験用スクリプト。Captureの共通画像処理とMcp.Coreを利用する保存済みプレビュー取得アダプター。
 - **未実装:** 本格的なモデリング、衝突・剛体物理、Glyphモーフィング実行、汎用スクリプト言語、独立レンダラー、Kachincoへの自動受け渡し、完成映像のエンコード。コードは用意されていてもBlenderでの実機受入れは別途必要。
 - **Cinemaとの区別:** [flamoris-cinema](https://github.com/flamoris-jp/flamoris-cinema) は将来の**作品全体の演出・プロジェクト統括**（現在休眠）。CGは単体で「素材クリップを作る」。Cinemaの開発は再開しない。
 - **KineticTypoとの区別:** KineticTypoは文字の動作と字幕演出。CGは物体・形状・空間の動作。共通化は実例ができてから。
@@ -30,7 +30,7 @@ FLAMORIS-CGは、**スクリプトでオブジェクトを作り、動かし、C
 
 実験用スクリプトの [hello_motion.json](examples/hello_motion.json) は、床と球を作り、球の位置をいくつかのキーフレームで変更します。**物理演算ではなく、指定した動きの再生**です。任意のPythonコードをJSONから実行しません。
 
-事前条件: Python 3.11+、Blender（別途インストール、実行可能な `blender` コマンド）、描画する場合は利用できるCPU環境。現時点でCIはPython仕様検証のみで、Blender実機テストではありません。
+事前条件: Python 3.11+、Blender（別途インストール、実行可能な `blender` コマンド）、描画する場合は利用できるCPU環境。CIはPython仕様検証とWindows/Linuxの画像・MCP境界テストを行います。Blender実機試験は[別記録](docs/preview-acceptance.md)です。
 
 ```sh
 # Blenderなしでも入力の検証ができる
@@ -71,3 +71,8 @@ Start from the [FLAMORIS organization map](https://github.com/flamoris-jp/.githu
 ## License
 
 Code: [Apache License 2.0](LICENSE). Blender、フォント、モデル、素材等のサードパーティー資産は各自のライセンスに従います。
+
+
+## AIと一緒にプレビューを見る
+
+保存済みプレビューを `preview.get` で実画像として取得できます。[構成・ビルド・利用](docs/preview-mcp.md)を参照。生成と取得は別操作で、読み取りではレンダリングしません。

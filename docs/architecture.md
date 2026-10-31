@@ -60,3 +60,8 @@ Decide later, with evidence, which operations stay delegated to Blender, which c
 ## Tests and evidence
 
 Python unit tests validate the data contract without Blender. A successful Blender preview requires a real run and inspection of `.blend` and PNG outputs; it is not implied by CI. When accepted, record the Blender version, output files, render device, exact command and visible result. See [roadmap](roadmap.md).
+
+
+## Saved preview observation
+
+The separate read-only .NET adapter consumes managed clip manifests and reuses Capture.Imaging plus Mcp.Core 1.4.0. It returns actual MCP image blocks without rendering, accepting arbitrary paths or copying transport. See [contract](preview-mcp.md) and [Linux headless acceptance](preview-acceptance.md). The builder remains an explicit local process; MCP observation does not become a render scheduler.
