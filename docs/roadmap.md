@@ -45,3 +45,7 @@ This track studies **single CG scenes / clips**. Multi-tool project-wide plannin
 ## 2026-11-01: saved-preview observation accepted
 
 Linux headless static preview generation and real MCP PNG/JPEG image disclosure are now verified separately from Python CI. See [acceptance scope](preview-acceptance.md). This supersedes earlier untested-static-preview status only; other hardware/sequence/GPU milestones remain separate.
+
+## 2026-11-01: 旧Scene Engineバックログの整理
+
+[CG #8](https://github.com/flamoris-jp/flamoris-CG/issues/8)と[責任整理](scene-engine-scope.md)に旧Kachinco #124 / Glyph #3の対応表を記録。物理はgate 2、出力/受け渡しはgate 3、Glyph取込はgate 4、軽量実行系はgate 5の候補です。新gateや実装開始は追加せず、独立リポジトリ・全体共通schema・Cinema再開を前提にしません。Cinemaの証跡はCGの受入れを代替しません。
