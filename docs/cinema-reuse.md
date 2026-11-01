@@ -24,3 +24,7 @@ Instead start with a deliberately small Blender experiment here. When a real CG 
 4. Keep Cinema's historical code and commitments untouched unless separately authorized.
 
 The initial example deliberately uses a separate minimal JSON laboratory spec; it is **not** compatible with Cinema Scene/Take JSON. Unification is a later decision based on real use, not a requirement to begin.
+
+## Legacy issue dependencies (2026-11-01)
+
+[Scene Engine reconciliation](scene-engine-scope.md) maps Kachinco #124 and Glyph #3 to current owners and research gates. Inspect Cinema's existing Glyph adapter before selecting CG's read-only integration. It neither completes CG integration nor requires Cinema to resume. CG and Glyph can agree a minimum consumer contract without a universal Scene/Take schema.

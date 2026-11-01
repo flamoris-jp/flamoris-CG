@@ -65,3 +65,7 @@ Python unit tests validate the data contract without Blender. A successful Blend
 ## Saved preview observation
 
 The separate read-only .NET adapter consumes managed clip manifests and reuses Capture.Imaging plus Mcp.Core 1.4.0. It returns actual MCP image blocks without rendering, accepting arbitrary paths or copying transport. See [contract](preview-mcp.md) and [Linux headless acceptance](preview-acceptance.md). The builder remains an explicit local process; MCP observation does not become a render scheduler.
+
+## Legacy Scene Engine plan reconciliation (2026-11-01)
+
+See [scope and dependencies](scene-engine-scope.md) for Kachinco #124 / Glyph #3. CG owns the clip-level production backlog; Glyph owns immutable shapes and Kachinco owns media import/editing. The old separate-engine repository and universal scene schema are not prerequisites. Physics, Glyph ingestion and automated handoff remain unimplemented here. Cinema stays paused; its historical contracts are evidence to compare, not CG's format.

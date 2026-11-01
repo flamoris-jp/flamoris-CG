@@ -76,3 +76,7 @@ Code: [Apache License 2.0](LICENSE). Blender、フォント、モデル、素材
 ## AIと一緒にプレビューを見る
 
 保存済みプレビューを `preview.get` で実画像として取得できます。[構成・ビルド・利用](docs/preview-mcp.md)を参照。生成と取得は別操作で、読み取りではレンダリングしません。
+
+## 旧Scene Engine計画との関係
+
+Kachinco #124 / Glyph #3の旧計画は、[責任・依存関係の整理](docs/scene-engine-scope.md)と[CG #8](https://github.com/flamoris-jp/flamoris-CG/issues/8)で追跡します。クリップ内のオブジェクト・動作・シーン・出力をCGの範囲へ整理し、Glyphは形状、Kachincoは編集を保持します。独立エンジン新設、共通schema先行確定、Cinema再開は既定事項にしません。バックログの整理で、機能実装・実機受入れの追加ではありません。
