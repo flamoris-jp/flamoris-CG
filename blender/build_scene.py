@@ -15,6 +15,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from flamoris_cg.spec import load_scene
+from flamoris_cg.assets import resolve_png
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from sprites import create_sprite
 
 
 def parse_args():
@@ -22,16 +25,20 @@ def parse_args():
     parser = argparse.ArgumentParser(description="FLAMORIS-CG Blender lab")
     parser.add_argument("--spec", required=True, help="Validated scene JSON")
     parser.add_argument("--output", required=True, help="NEW output directory")
+    parser.add_argument("--assets", help="Explicit directory of <asset-id>.png sprite files")
     outputs = parser.add_mutually_exclusive_group()
     outputs.add_argument("--preview", action="store_true")
     outputs.add_argument("--sequence", action="store_true")
     return parser.parse_args(args)
 
 
-def build(spec):
+def build(spec, asset_root=None):
     import bpy
     from mathutils import Vector
 
+    # Validate every asset before changing Blender state.
+    assets = {obj["asset"]: resolve_png(asset_root, obj["asset"])
+              for obj in spec["objects"] if obj["primitive"] == "sprite"}
     bpy.ops.wm.read_factory_settings(use_empty=True)
     scene = bpy.context.scene
     scene.frame_start = 1
@@ -59,18 +66,23 @@ def build(spec):
             bpy.ops.mesh.primitive_cube_add()
         elif kind == "uv_sphere":
             bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=16)
-        obj = bpy.context.object
+        elif kind == "sprite":
+            obj = create_sprite("CG_" + description["id"], assets[description["asset"]],
+                                tint=description["color"])
+        if kind != "sprite":
+            obj = bpy.context.object
         obj.name = "CG_" + description["id"]
         obj["cg_id"] = description["id"]
         obj.location = description["location"]
         obj.scale = description["scale"]
-        material = bpy.data.materials.new("CG_Mat_" + description["id"])
-        material.diffuse_color = (*description["color"], 1.0)
-        material.use_nodes = True
-        principled = material.node_tree.nodes.get("Principled BSDF")
-        if principled:
-            principled.inputs["Base Color"].default_value = (*description["color"], 1.0)
-        obj.data.materials.append(material)
+        if kind != "sprite":
+            material = bpy.data.materials.new("CG_Mat_" + description["id"])
+            material.diffuse_color = (*description["color"], 1.0)
+            material.use_nodes = True
+            principled = material.node_tree.nodes.get("Principled BSDF")
+            if principled:
+                principled.inputs["Base Color"].default_value = (*description["color"], 1.0)
+            obj.data.materials.append(material)
         for key in description.get("keyframes", []):
             obj.location = key["location"]
             obj.keyframe_insert(data_path="location", frame=key["frame"])
@@ -83,6 +95,9 @@ def build(spec):
                         point.interpolation = "LINEAR"
 
     camera_data = bpy.data.cameras.new("CG_Camera")
+    if spec["camera"].get("projection") == "orthographic":
+        camera_data.type = "ORTHO"
+        camera_data.ortho_scale = spec["camera"].get("ortho_scale", 8.0)
     camera = bpy.data.objects.new("CG_Camera", camera_data)
     scene.collection.objects.link(camera)
     camera.location = spec["camera"]["location"]
@@ -107,7 +122,9 @@ def main():
     spec = load_scene(args.spec)
     output = Path(args.output).resolve()
     output.mkdir(parents=True, exist_ok=False)
-    scene = build(spec)
+    scene = build(spec, args.assets)
+    # Pack referenced artwork so scene.blend remains editable after moving it.
+    bpy.ops.file.pack_all()
     native = output / "scene.blend"
     bpy.ops.wm.save_as_mainfile(filepath=str(native))
     artifacts = ["scene.blend"]
