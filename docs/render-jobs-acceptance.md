@@ -92,9 +92,12 @@ copied or resumed.
 - Queued cancellation was tested live. Cancellation during an active render is
   covered at the adapter state-machine level, not a claim that every Blender
   driver/render backend always stops immediately.
-- This is a CLI + callable application API reachable through the existing trusted
-  Blender MCP execution surface. Dedicated Hub catalog tools and push-completion
-  notifications have not been installed.
+- This job-layer acceptance covers the CLI + callable application API reachable
+  through the existing trusted Blender MCP execution surface. Dedicated Hub
+  catalog tools are not included. The later optional [MCP Events experiment](job-events-acceptance.md)
+  was activated on LIME on the same date and accepted one successful one-frame
+  job through the real tunnel, ChatGPT subscription and conversation response.
+  It does not establish phone/OS-banner delivery or a general cross-app service.
 - Large output collection remains a bounded synchronous operation. This slice
   does not implement a generic archive scheduler or a universal cross-app queue.
 - No dedicated per-application VRAM ownership, arbitrary asset ingestion, native
