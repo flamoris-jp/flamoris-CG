@@ -8,7 +8,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import pwd
 import shutil
 import subprocess
 import time
@@ -24,11 +23,38 @@ def command(*args):
     return subprocess.run(args, check=True, timeout=30, capture_output=True, text=True)
 
 
+def seal_source_tree(target):
+    """Explicit modes including the root: mkdir's mode is reduced by umask."""
+    target.chmod(0o755)
+    for path in target.rglob("*"):
+        if path.is_symlink():
+            raise ValueError("installed code must not contain symlinks")
+        path.chmod(0o755 if path.is_dir() else 0o444)
+
+
+def verify_snapshot(target, hashes):
+    """Resume only a root-owned, byte-identical partial code installation."""
+    if target.is_symlink() or not target.is_dir() or target.stat().st_uid != 0:
+        raise ValueError("resume requires the original root-owned code directory")
+    files = set()
+    for path in target.rglob("*"):
+        if path.is_symlink() or path.stat().st_uid != 0:
+            raise ValueError("installed code ownership changed")
+        if path.is_file():
+            files.add(str(path.relative_to(target)))
+    if files != set(hashes):
+        raise ValueError("installed file set changed; inspect before resuming")
+    for name, expected in hashes.items():
+        if digest(target/name) != expected:
+            raise ValueError("installed code changed; inspect before resuming")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", required=True)
     action = parser.add_mutually_exclusive_group()
     action.add_argument("--apply", action="store_true")
+    action.add_argument("--resume", action="store_true")
     action.add_argument("--rollback", action="store_true")
     args = parser.parse_args()
     plan = json.loads(Path(args.plan).read_text())
@@ -45,7 +71,7 @@ def main():
             path = source/name
             if path.is_symlink() or not path.is_file() or digest(path) != expected:
                 raise ValueError("source changed; inspect and regenerate the plan")
-    if not args.apply and not args.rollback:
+    if not args.apply and not args.resume and not args.rollback:
         print(json.dumps({"action": "review", "source": str(source), "target": str(target),
             "gateway_unit": plan["gateway_unit_text"], "tunnel_override": plan["tunnel_override_text"],
             "rollback": "Run this same command with --rollback", "source_hashes": plan["source_hashes"]}, indent=2))
@@ -63,24 +89,29 @@ def main():
         print("Original tunnel transport restored; gateway stopped. Files retained for review.")
         return
     # Refuse pre-existing deployments and unrelated drop-ins; never overwrite them.
-    if target.exists() or service.exists() or override.exists():
-        raise ValueError("deployment destination already exists; inspect instead of repeating apply")
+    if override.exists():
+        raise ValueError("tunnel override exists; inspect instead of repeating activation")
     if override.parent.exists() and list(override.parent.iterdir()):
         raise ValueError("unreviewed tunnel drop-ins exist")
     command("systemctl", "is-active", "--quiet", baseline.name)
-    target.mkdir(mode=0o755)
-    for name, expected in plan["source_hashes"].items():
-        destination = target/name
-        destination.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
-        # Copy by bytes into the new version root. Never chown a user-owned tree.
-        with (source/name).open("rb") as incoming, destination.open("xb") as outgoing:
-            shutil.copyfileobj(incoming, outgoing)
-        if digest(destination) != expected:
-            raise ValueError("source changed during copy; new inactive files retained")
-        destination.chmod(0o444)
-    for directory in target.rglob("*"):
-        if directory.is_dir():
-            directory.chmod(0o755)
+    if args.resume:
+        if service.is_symlink() or not service.is_file() or service.stat().st_uid != 0 or service.read_text() != plan["gateway_unit_text"]:
+            raise ValueError("gateway service changed; inspect before resuming")
+        verify_snapshot(target, plan["source_hashes"])
+    else:
+        if target.exists() or service.exists():
+            raise ValueError("deployment destination already exists; inspect before using --resume")
+        target.mkdir(mode=0o755)
+        for name, expected in plan["source_hashes"].items():
+            destination = target/name
+            destination.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
+            # Copy by bytes into the new version root. Never chown a user-owned tree.
+            with (source/name).open("rb") as incoming, destination.open("xb") as outgoing:
+                shutil.copyfileobj(incoming, outgoing)
+            if digest(destination) != expected:
+                raise ValueError("source changed during copy; new inactive files retained")
+    seal_source_tree(target)
+    import pwd
     account = pwd.getpwnam(plan["user"])
     for config_name in ("gateway.json", "ingress-token", "ingress-header"):
         path = source/config_name
@@ -88,9 +119,10 @@ def main():
             raise ValueError("invalid private configuration")
         os.chown(path, account.pw_uid, account.pw_gid)
         path.chmod(0o600)
-    with service.open("x") as stream:
-        stream.write(plan["gateway_unit_text"])
-    service.chmod(0o644)
+    if not args.resume:
+        with service.open("x") as stream:
+            stream.write(plan["gateway_unit_text"])
+        service.chmod(0o644)
     switched = False
     try:
         command("systemctl", "daemon-reload")

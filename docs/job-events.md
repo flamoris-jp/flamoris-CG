@@ -72,6 +72,15 @@ closed and reaped on shutdown. Do not silently change an existing tunnel or
 restart the persistent Blender scene. Prepare a reviewed service override and
 rollback before an operator switches transports.
 
+The code directory itself and its subdirectories must have explicit mode 0755;
+`mkdir(mode=0755)` alone becomes 0700 under the installer's umask 0077. Code
+files use 0444; private state/configuration and tokens retain their private
+permissions. After a failed initial installation, `--resume` validates the exact
+root-owned installed file set and hashes, original gateway unit and unchanged
+tunnel baseline before correcting code traversal modes and repeating readiness.
+It refuses changed code, different ownership, symlinks, unexpected files or an
+existing tunnel override; it does not overwrite an installed code version.
+
 The tunnel client remains running to accept MCP calls; the gateway remains
 running to observe jobs and deliver events even when no chat tool call is
 active. A disconnected tunnel prevents subscription renewal and future tools;

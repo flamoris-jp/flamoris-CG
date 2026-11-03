@@ -2,7 +2,8 @@
 
 ## Accepted source and local integration
 
-- 55 portable Python tests pass, including the original 40 render/batch tests.
+- 58 Python tests pass on Linux, including the original 40 render/batch tests.
+  The three new POSIX installation-permission regressions are skipped on Windows.
   Notification cases cover signature bytes, callback address filtering,
   challenge failure, duplicate subscription/refresh, fresh-process state,
   late subscription, no unrequested polling, Retry-After/restart, expiry,
@@ -32,6 +33,18 @@ separate bounded supervisor thread so the Blender request could return before
 the query. The supervisor owned a process group, killed it on timeout and
 waited/reaped it. The successful trial completed in approximately one second.
 The persistent Blender process and Flamenco services were not restarted.
+
+The first administrative activation then failed before transport switching:
+the code root was root-owned mode 0700 because umask 0077 reduced `mkdir`'s 0755.
+Nested directories had been corrected but the root itself had been omitted.
+The service's ordinary user could not discover `flamoris_cg`, and readiness
+timed out. The gateway was stopped/disabled, the original tunnel stayed active
+and no tunnel override was present. The installer now explicitly sets the code
+root and nested directory modes, and an integrity-checked `--resume` handles the
+verified partial installation. Regression tests reproduce the restrictive
+umask, retain private permissions outside the code tree, and reject changed code.
+The corrected administrative resume still requires the local operator; no
+successful activation or real notification is claimed from these unit tests.
 
 ## Still pending: real tunnel and Work chat
 
