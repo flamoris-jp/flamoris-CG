@@ -134,7 +134,23 @@ subscriptions do not deliver. 410 disables the subscription; 413, redirects and
 permanent 4xx errors are not retried. The worker sends no progress spam and
 never calls ChatGPT tools or an OpenAI inference API.
 
-## Acceptance and next action
+## Acceptance and further deployment
+
+On **2026-11-03**, the LIME operator activated this gateway and switched the
+existing tunnel to its private HTTP target. After plugin rescan, a real ChatGPT
+subscription verified its signed callback; one 320x180, one-frame job reached
+`succeeded`, its terminal event woke ChatGPT, and `cg.job_status` was checked
+before a success report appeared in the conversation. This was an actual
+end-to-end acceptance, separate from the injected receiver used below. See the
+[acceptance record](job-events-acceptance.md) for timing and remaining limits.
+Phone/OS-banner delivery and live restart/disconnection delivery are unverified.
+The platform's `delivery_status` remained `unknown`; it is not rewritten as
+`delivered` based on the gateway's outbox acknowledgement.
+
+The commands and switching guidance below are for explicit tests or a reviewed
+new deployment. They are not instructions to reactivate an accepted installation
+or repeat its tunnel switch. This source integration requires no LIME restart
+or production configuration change.
 
 Run standard tests:
 
