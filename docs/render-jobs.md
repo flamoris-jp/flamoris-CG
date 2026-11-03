@@ -139,7 +139,7 @@ blender -b --disable-autoexec --threads 2 --python-exit-code 1 \
 - Manager再起動/停止: backend実装の復旧に任せ、CGはunavailableとして以前の状態を保持。Managerの実停止・再起動は受入試験で勝手に実行しない。
 - Worker再起動: 再割当・プロセス管理はFlamenco。CGから手動PID操作しない。
 - 受付不明0件/複数件: 自動再投入しない。operatorがManagerの履歴・ログを確認する。
-- 完了通知・ChatGPTの自動復帰は未実装。poll間隔を尊重して後から再取得できることが今回の保証。
+- このJOB基盤単体ではpoll間隔を尊重して後から再取得できることが保証。[別途のMCP Events実験](job-events.md)には完了通知の実装とローカル試験があるが、実際のトンネル切替・ChatGPTの購読と会話の自動再開は未受入れ。
 - result収集は最大byteとログ件数を制限した同期処理。大規模ZIP作成が長くなる場合は、そのownerで別JOBへ切り出す次の候補。
 
 See [acceptance evidence](render-jobs-acceptance.md) for actual tests and rendering; unit tests alone are not Blender acceptance.
