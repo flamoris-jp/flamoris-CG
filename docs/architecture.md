@@ -32,7 +32,8 @@ No project-wide screenplay or director is required. CG can create an individual 
 
 See `examples/hello_motion.json`: `schema_version`, `fps`, `duration_frames`, `render`, one camera, one or more lights, and a bounded list of primitives with optional translation keyframes. Coordinates use Blender's world axes (Z up), and frames are 1-based for this **isolated laboratory format**. This is **not** the Cinema v1 Scene/Take format: do not silently pass one format to the other.
 
-- Supported shapes: cube and UV sphere, with constant material colour.
+- Supported shapes: cube and UV sphere with constant material colour; upright alpha PNG sprites with RGB tint and an explicit CLI asset directory. See [2.5D contract and experiment](pudding-defense-2.5d.md).
+- Camera: perspective by default; optional orthographic projection and bounded scale.
 - Supported motion: explicit location keyframes (linear interpolation).
 - Supported outputs: .blend, optional preview.png and optional PNG sequence.
 - Not supported: rigs, procedural glyph topology, arbitrary meshes/paths, modifiers, collision/forces, parent constraints, render farms, media encoding, existing native project imports.

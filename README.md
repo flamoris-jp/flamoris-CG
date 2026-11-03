@@ -28,6 +28,8 @@ FLAMORIS-CGは、**スクリプトでオブジェクトを作り、動かし、C
 
 ## 最初の実験: 球を動かす（Blender lab v0）
 
+**2.5Dの追加実験:** [プリン防衛戦](docs/pudding-defense-2.5d.md) では、3D背景に透過PNGのキャラクターを置き、平行投影でアニメ風の単体クリップを試します。`examples/sprite_stage.json` と `examples/pudding_defense.py` が入口です。全身スプライトの移動を扱うラフで、骨格歩行・表情・口パクはまだありません。
+
 実験用スクリプトの [hello_motion.json](examples/hello_motion.json) は、床と球を作り、球の位置をいくつかのキーフレームで変更します。**物理演算ではなく、指定した動きの再生**です。任意のPythonコードをJSONから実行しません。
 
 事前条件: Python 3.11+、Blender（別途インストール、実行可能な `blender` コマンド）、描画する場合は利用できるCPU環境。CIはPython仕様検証とWindows/Linuxの画像・MCP境界テストを行います。Blender実機試験は[別記録](docs/preview-acceptance.md)です。
@@ -47,7 +49,7 @@ blender -b --python-exit-code 1 --python blender/build_scene.py -- --spec exampl
 blender -b --python-exit-code 1 --python blender/build_scene.py -- --spec examples/hello_motion.json --output outputs/hello-frames --sequence
 ```
 
-作成するフォルダーが既存なら安全のため失敗します。対応するオブジェクトは `cube` と `uv_sphere` に限定し、FPS、尺、数値範囲、キーフレーム数を制限します。Blenderがインストールされていなくても入力スキーマのユニットテストはできます。PNG連番をMP4にする工程は今後の実験対象です。
+作成するフォルダーが既存なら安全のため失敗します。対応するオブジェクトは `cube`・`uv_sphere`・明示したPNG素材を使う `sprite` に限定し、FPS、尺、数値範囲、キーフレーム数を制限します。Blenderがインストールされていなくても入力スキーマのユニットテストはできます。汎用builderはMP4をエンコードせず、連番の映像化と最終編集は制作工程 / Kachinco側で行います。
 
 ## 目標と進め方
 

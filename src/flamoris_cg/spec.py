@@ -58,7 +58,13 @@ def validate_scene(spec):
     _int(render["samples"], 1, 64, "render.samples")
 
     cam = spec["camera"]
-    _object(cam, ("location", "target"), label="camera")
+    _object(cam, ("location", "target"), ("projection", "ortho_scale"), label="camera")
+    if cam.get("projection", "perspective") not in ("perspective", "orthographic"):
+        raise ValueError("camera.projection: unsupported projection")
+    if "ortho_scale" in cam:
+        if cam.get("projection") != "orthographic":
+            raise ValueError("camera.ortho_scale requires orthographic projection")
+        _number(cam["ortho_scale"], 0.01, 1000, "camera.ortho_scale")
     _vec(cam["location"], -1000, 1000, "camera.location")
     _vec(cam["target"], -1000, 1000, "camera.target")
     if sum((a - b) ** 2 for a, b in zip(cam["location"], cam["target"])) < 1e-10:
@@ -78,13 +84,17 @@ def validate_scene(spec):
     used = set()
     for obj in objects:
         _object(obj, ("id", "primitive", "location", "scale", "color"),
-                ("keyframes",), "object")
+                ("keyframes", "asset"), "object")
         _id(obj["id"])
         if obj["id"] in used:
             raise ValueError("objects: duplicate id")
         used.add(obj["id"])
-        if obj["primitive"] not in ("cube", "uv_sphere"):
+        if obj["primitive"] not in ("cube", "uv_sphere", "sprite"):
             raise ValueError("object.primitive: unsupported kind")
+        if obj["primitive"] == "sprite":
+            _id(obj.get("asset"))
+        elif "asset" in obj:
+            raise ValueError("object.asset requires sprite primitive")
         _vec(obj["location"], -1000, 1000, "object.location")
         _vec(obj["scale"], 0.0001, 100, "object.scale")
         _vec(obj["color"], 0, 1, "object.color")
