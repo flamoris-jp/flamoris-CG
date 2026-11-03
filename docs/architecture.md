@@ -38,7 +38,7 @@ See `examples/hello_motion.json`: `schema_version`, `fps`, `duration_frames`, `r
 - Supported outputs: .blend, optional preview.png and optional PNG sequence.
 - Not supported: rigs, procedural glyph topology, arbitrary meshes/paths, modifiers, collision/forces, parent constraints, render farms, media encoding, existing native project imports.
 - Validation: IDs unique, unknown properties rejected, bounded object count, duration, resolution and samples, finite numeric coordinates, keyframes in ascending frame order.
-- Execution: trusted locally installed Blender, **new output directory**; no auto-installs or GPU selection, no calls to LIME/Flamenco/MCP.
+- Direct builder execution: trusted locally installed Blender, **new output directory**; no auto-installs or implicit GPU selection. The optional [durable job adapter](render-jobs.md) separately submits registered native snapshots to an operator-configured Flamenco, without a new scheduler or local rendering subprocess.
 - Limits: max 32 objects, 8 lights, 240 frames, 1920x1080 preview ceiling, 64 samples, JSON <= 256 KiB; these are trial limits, not product promises.
 
 ## Clear ownership boundaries
@@ -65,7 +65,7 @@ Python unit tests validate the data contract without Blender. A successful Blend
 
 ## Saved preview observation
 
-The separate read-only .NET adapter consumes managed clip manifests and reuses Capture.Imaging plus Mcp.Core 1.4.0. It returns actual MCP image blocks without rendering, accepting arbitrary paths or copying transport. See [contract](preview-mcp.md) and [Linux headless acceptance](preview-acceptance.md). The builder remains an explicit local process; MCP observation does not become a render scheduler.
+The separate read-only .NET adapter consumes managed clip manifests and reuses Capture.Imaging plus Mcp.Core 1.4.0. It returns actual MCP image blocks without rendering, accepting arbitrary paths or copying transport. See [contract](preview-mcp.md) and [Linux headless acceptance](preview-acceptance.md). The builder remains an explicit local process; MCP observation does not become a render scheduler. The separate render-job application API owns admission and reconnectable references; Flamenco owns execution. Data edit batches are fully validated before Blender changes or output creation.
 
 ## Legacy Scene Engine plan reconciliation (2026-11-01)
 

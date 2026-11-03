@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operations": [
+    {"type": "set_location", "object_id": "red_ball", "value": [-2, 0, 1]},
+    {"type": "set_color", "object_id": "red_ball", "value": [0.1, 0.7, 0.9]},
+    {"type": "set_render", "value": {"width": 320, "height": 180, "samples": 2}}
+  ]
+}

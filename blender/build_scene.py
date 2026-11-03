@@ -14,7 +14,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from flamoris_cg.spec import load_scene
+from flamoris_cg.spec import load_scene, _no_duplicate_pairs, _no_constant, MAX_JSON_BYTES
+from flamoris_cg.batch import apply_batch
 from flamoris_cg.assets import resolve_png
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sprites import create_sprite
@@ -25,6 +26,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="FLAMORIS-CG Blender lab")
     parser.add_argument("--spec", required=True, help="Validated scene JSON")
     parser.add_argument("--output", required=True, help="NEW output directory")
+    parser.add_argument("--batch", help="Bounded edits validated before Blender changes")
     parser.add_argument("--assets", help="Explicit directory of <asset-id>.png sprite files")
     outputs = parser.add_mutually_exclusive_group()
     outputs.add_argument("--preview", action="store_true")
@@ -120,6 +122,13 @@ def main():
     import bpy
     args = parse_args()
     spec = load_scene(args.spec)
+    batch_receipt = None
+    if args.batch:
+        raw = Path(args.batch).read_bytes()
+        if len(raw) > MAX_JSON_BYTES:
+            raise ValueError("batch exceeds byte budget")
+        spec, batch_receipt = apply_batch(spec, json.loads(raw.decode("utf-8"),
+            object_pairs_hook=_no_duplicate_pairs, parse_constant=_no_constant))
     output = Path(args.output).resolve()
     output.mkdir(parents=True, exist_ok=False)
     scene = build(spec, args.assets)
@@ -149,6 +158,8 @@ def main():
         "artifacts": artifacts,
         "notes": "Keyframed motion; no physics, GPU selection, or encoded video.",
     }
+    if batch_receipt:
+        manifest["batch"] = batch_receipt
     if args.preview:
         preview = output / "preview.png"
         manifest["preview"] = {

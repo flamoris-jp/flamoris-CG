@@ -28,6 +28,10 @@ FLAMORIS-CGは、**スクリプトでオブジェクトを作り、動かし、C
 
 ## 最初の実験: 球を動かす（Blender lab v0）
 
+**非同期描画JOB:** [再接続できる描画JOB](docs/render-jobs.md) は、既設Flamencoへの投入・永続ID・再送防止・確認間隔・限定キャンセル・結果ZIPを扱います。CLIと既設Blender MCPから呼ぶデータAPIを共有し、CG自身は描画子プロセスを起動しません。[実機受入れ](docs/render-jobs-acceptance.md)を参照。
+
+**操作バッチ:** `--batch examples/render_batch.json` で位置・色・描画設定等を一括検証してから一度のBlender構築へ渡せます。不正な操作は開始前に拒否し、任意Pythonは実行しません。
+
 **2.5Dの追加実験:** [プリン防衛戦](docs/pudding-defense-2.5d.md) では、3D背景に透過PNGのキャラクターを置き、平行投影でアニメ風の単体クリップを試します。`examples/sprite_stage.json` と `examples/pudding_defense.py` が入口です。全身スプライトの移動を扱うラフで、骨格歩行・表情・口パクはまだありません。
 
 実験用スクリプトの [hello_motion.json](examples/hello_motion.json) は、床と球を作り、球の位置をいくつかのキーフレームで変更します。**物理演算ではなく、指定した動きの再生**です。任意のPythonコードをJSONから実行しません。
