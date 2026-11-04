@@ -172,3 +172,48 @@ A 48-frame/24-fps CPU output and an angle-control comparison are provided; this
 is not a Blender render or full-character acceptance. A common stroke/fill
 boundary removes the previous *registration* mismatch within this small redraw,
 while natural motion and fidelity remain separate evaluation goals.
+
+## Thumb-root overlap and a chosen hand turn — 2026-11-05
+
+`run_thumb_turn.py --output /new/thumb-turn` keeps the earlier arm motion and
+introduces a manually authored thick palm and a **separate thumb**. A selected
+180-degree turn about the hand's longitudinal axis takes the back through an
+edge view to the palm. This angle/depth/proportion is an authored hypothesis,
+not recovered from two images. One fixed model is used throughout, rather than
+substituting a mirrored hand halfway through.
+
+Triangles are depth-buffered before drawing outlines and thumb/palm boundaries.
+Dorsal thumbnail/finger cues are visible at the start; the palmar thenar arc and
+selected folds appear at the end. Detail strokes are depth-tested against the
+surface. Occluded lines are hidden, with no image dissolve. Opaque paint and
+outline derive from the same projected surfaces. An opaque cuff connector joins
+the rotating palm to the existing sleeve.
+
+This follows drawing references discussed with Akino: the thumb base as its own
+form, visible overlapping boundaries, and distinguishing palmar/dorsal details:
+
+- https://www.proko.com/course-lesson/how-to-draw-hands-from-imagination-step-by-step
+- https://www.proko.com/course-lesson/how-to-draw-hands-details-for-realistic-hands
+- https://www.proko.com/course-lesson/how-to-draw-arm-bones-anatomy-for-artists/
+- https://tips.clip-studio.com/en-us/articles/3278
+
+No illustrations, assets or tutorial code were copied. The implementation is an
+independent small geometry/rasterization study, not a Glyph morphing fork or a
+copy of Cinema's bridge. Original reference-pose fidelity, anatomical forearm
+motion, natural animation and whole-character acceptance remain unproven.
+
+The comparison shows a fixed dorsal view without details versus the turning
+hand with thumb boundaries and surface details. It changes both geometry and
+ink cues; it cannot establish the isolated causal benefit of a single line.
+
+A raw trial found up to two pinhole samples in the 3× supersampled coverage.
+The final rasterizer explicitly fills enclosed pinholes with opaque skin color
+and rejects holes larger than 16 supersampled samples for manual inspection.
+Raw repair counts are recorded separately from remaining holes. This is a
+bounded raster coverage correction, not an assertion of exact geometric
+watertightness. Depth/visibility changes may still cause small popping artifacts.
+
+Tests cover preservation of the projected hand axis during twist, cross-section
+reversal, opaque connected paint in three views, hidden surface-detail strokes
+in the edge view, and concave cap triangulation area. All 94 Python tests pass.
+PNG/GIF/MP4 results use the Work CPU runtime; Blender rendering was not involved.
