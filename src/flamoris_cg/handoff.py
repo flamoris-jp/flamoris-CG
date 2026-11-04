@@ -3,6 +3,7 @@
 No scheduler, network, live editor, project codec or timeline authority here.
 Only the installed Kachinco CLI creates and imports projects.
 """
+from contextlib import ExitStack
 from fractions import Fraction
 import hashlib
 import json
@@ -76,11 +77,14 @@ def executable(path):
     return str(Path(resolved).absolute())
 
 
-def run(command, log, *, timeout=300):
+def run(command, log, *, timeout=300, error_log=None):
     """Fixed argv only. Logs are retained; a timeout never triggers a replay."""
-    with Path(log).open('xb') as stream:
+    with ExitStack() as stack:
+        stream = stack.enter_context(Path(log).open('xb'))
+        errors = (stack.enter_context(Path(error_log).open('xb'))
+                  if error_log is not None else subprocess.STDOUT)
         result = subprocess.run(command, stdin=subprocess.DEVNULL, stdout=stream,
-                                stderr=subprocess.STDOUT, timeout=timeout, check=False)
+                                stderr=errors, timeout=timeout, check=False)
     if result.returncode:
         raise ValueError('command failed; inspect ' + str(log))
 
@@ -236,7 +240,8 @@ def import_test(handoff, output, kachinco, ffprobe='ffprobe'):
         def invoke(args, log):
             command = [cli, *map(str, args)]
             result['commands'].append(command)
-            run(command, folder / log, timeout=120)
+            # CLI contract: stdout is JSON, stderr is diagnostics even on success.
+            run(command, folder / log, timeout=120, error_log=folder / (log + '.stderr'))
             return read_json(folder / log)
 
         invoke(['project', 'new', '--output', seed, '--name', 'CG handoff TEST',

@@ -123,8 +123,8 @@ when ffmpeg/ffprobe are absent; the dedicated Ubuntu workflow installs them
 and executes this file with actual codecs. CLI emulation is always labelled.
 
 2026-11-04 code-validation host: Python 3.12.14, FFmpeg/ffprobe 6.1.1;
-**73 tests passed**, including 15 new handoff tests (6 real-codec/CLI-boundary
-tests and 9 portable rejection/metadata tests). Both `hello_motion.json` and
+**74 tests passed**, including 16 new handoff tests (6 real-codec/CLI-boundary
+tests and 10 portable rejection/metadata/process-output tests). Both `hello_motion.json` and
 `sprite_stage.json` validated; `git diff --check` passed. No installed Kachinco
 CLI/.NET SDK was available on that host, so no real Kachinco import is claimed.
 

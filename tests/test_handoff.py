@@ -95,6 +95,14 @@ class HandoffTests(Fixture):
         self.assertEqual(fps, Fraction(2997, 125))
         self.assertEqual(duration, Fraction(125, 999))
 
+    def test_cli_stdout_json_is_separate_from_success_diagnostics(self):
+        output, errors = self.root / 'out.json', self.root / 'diagnostics.txt'
+        h.run([sys.executable, '-c',
+               'import sys; print("{\\"success\\":true}"); print("diagnostic", file=sys.stderr)'],
+              output, error_log=errors)
+        self.assertTrue(h.read_json(output)['success'])
+        self.assertEqual(errors.read_text().strip(), 'diagnostic')
+
     def test_zip_missing_extra_duplicate_traversal_or_symlink_refused(self):
         base = [('job.json', json.dumps(self.job).encode()), ('diagnostics.json', b'{}')]
         frames = [(f'frames/{f:06d}.png', png()) for f in self.job['request']['frames']]
