@@ -1,6 +1,6 @@
 # One completed JOB → MP4 → isolated Kachinco test project
 
-Status: **offline CLI implementation; real LIME/Kachinco acceptance pending**.
+Status: **offline CLI implemented; LIME/Kachinco media registration, save and CLI reopen accepted on 2026-11-04**. Timeline placement, subtitle editing, preview, final export, Windows reopen and live Undo/Redo are outside this acceptance.
 This is a single-clip handoff, not a completion-event subscriber or Cinema planner.
 Related: [Kachinco #124](https://github.com/flamoris-jp/flamoris-kachinco/issues/124),
 [CG #8](https://github.com/flamoris-jp/flamoris-CG/issues/8).
@@ -118,7 +118,7 @@ The CLI exits 0 on success and 2 on failure.
 | Real FFmpeg integration in CI/local test host | Generated 8×8 PNG fixture, 180 frames / 12fps / 15s, decoded count, hashes, fractional 23.976fps, non-one start, transparency over black, corrupt PNG failure. This is codec evidence, **not a Blender render**. |
 | Simulated CLI JSON boundary | Checks exact CLI invocation order, new seed/output paths, MP4 copy, hash checks, save/reopen observations and unchanged timeline checks; detects a simulated unwanted edit. **Not actual Kachinco import acceptance.** |
 | November 3 production | Earlier manual pudding render/upload/edit/export evidence; does not certify this new adapter. |
-| New LIME/Kachinco acceptance | **Pending.** No LIME JOB was submitted, no production project imported, no deployment/service configuration changed for these code tests. |
+| New LIME/Kachinco acceptance | **Accepted on 2026-11-04:** retained JOB → 24-frame/24fps/1s MP4 → actual `/app/kachinco` registration in an isolated 1920×1080 project, save, validate and CLI reopen. See the recorded acceptance below. No new render JOB, production-project import or service change. |
 
 Run `python -m unittest discover -s tests -v`. FFmpeg integration tests skip
 when ffmpeg/ffprobe are absent; the dedicated Ubuntu workflow installs them
@@ -130,7 +130,7 @@ tests and 10 portable rejection/metadata/process-output tests). Both `hello_moti
 `sprite_stage.json` validated; `git diff --check` passed. No installed Kachinco
 CLI/.NET SDK was available on that host, so no real Kachinco import is claimed.
 
-### Real acceptance procedure (not performed)
+### Real acceptance procedure (for an explicitly authorized future repeat)
 
 1. Inspect live LIME state with server-manager; locate the reviewed checkout,
    installed Kachinco CLI, FFmpeg/ffprobe and one retained completed JOB. Record
@@ -151,5 +151,43 @@ CLI/.NET SDK was available on that host, so no real Kachinco import is claimed.
    claim those from media-bin registration.
 
 This makes the bed-to-CG-to-editing workflow two inspectable operations today.
-An eventual MCP action can call this application layer after the isolated path
-has real acceptance; automatic terminal-event import remains out of scope.
+An eventual MCP action can reuse this application layer with its own authorization
+and acceptance; automatic terminal-event import remains out of scope.
+
+## Recorded LIME acceptance — 2026-11-04
+
+Source: [PR #15 retry2 acceptance record](https://github.com/flamoris-jp/flamoris-CG/pull/15).
+This section transcribes the recorded run; the documentation review did not
+repeat rendering or import. Implementation commit:
+`7ab16d1ff1af44cd17a2a9c17381124c58056c92`.
+
+- Retained successful JOB: `2faf7cf4-c2ad-492f-9656-93132caad670`
+  (batch-v1), frames 1–24, 320×180, 24fps.
+- Prepared MP4: 24 decoded frames, 1.000s, 35,280,000 ticks, 6,582 bytes.
+- Actual installed CLI: `/app/kachinco`; project new → media import →
+  validate → info. New test canvas: 1920×1080; source MP4 remains 320×180/24fps.
+- Validation: `valid: true`; one registered asset
+  `28f2f295-568f-459b-86ee-33884bc239ab`, durationTicks `35280000`.
+  Seed, copied MP4 and saved-project hashes were recalculated and matched receipts.
+- Installed image: `sha256:6ed1b807f29fd1c0fa2a571e38e1d25103708c8ce41e887388eb812fe0563fa3`.
+  The isolated run had no network or existing-editor/project mounts.
+  No new render JOB, production-project mutation or service-configuration change
+  was part of this acceptance.
+- Both observed revisions were 1 across separate CLI sessions. This does not
+  establish live Undo/Redo history persistence or a session revision increment.
+- The first import attempt used an incorrect executable path; retry1 then failed
+  before seed creation because a 320×180 canvas was unsupported. Commit
+  `7ab16d1` fixes the test canvas to the supported preset. Retry2 used fresh
+  output paths and succeeded. Earlier pending/failure notes in the PR are history.
+
+| Artifact | Recorded SHA-256 |
+| --- | --- |
+| JOB result ZIP (unchanged after prepare) | `3841f9d29b2878d538556936ada80a8340b6b19dc22c2611b048c7b4309101e9` |
+| MP4 | `72b2145a1be4bdafe8b21ef101e098a3e868d6478421e8eff5ef76af8ad5f413` |
+| Empty seed project | `cde7912d1776a7fda091f54bdaf69b40d6b05b90d6cc5e59996be9b411b6fe19` |
+| Saved imported project | `eeb9ae2bcc7cfcc3aeede96e4b45a4ad9f93d7620acdfaa0e0722b8ff0893eff` |
+
+Accepted scope is **media registration, save, validation and CLI reopen only**.
+No timeline clip is placed. Subtitle editing, preview, final export, Windows
+reopen, live Undo/Redo, automatic terminal-event import and existing production
+projects are not certified by this result.
