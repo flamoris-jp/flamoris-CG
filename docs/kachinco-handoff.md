@@ -104,7 +104,9 @@ The CLI exits 0 on success and 2 on failure.
   projects, assets and edit histories are outside this operation's targets.
   A saved `.fkproj` is not evidence that a live Undo stack was preserved or tested.
 - The new test sequence uses the CLI's current **30fps** default. Source FPS is
-  retained in the MP4/receipt. No clip is inserted; preview/export would otherwise
+  retained in the MP4/receipt. The test canvas is the supported 1920×1080 preset,
+  independent of source resolution; the MP4 is not resized or re-encoded at import.
+  No clip is inserted; preview/export would otherwise
   be an empty timeline. Placement, sequence-rate editing, subtitles and final
   export remain ordinary later Kachinco actions.
 

@@ -245,7 +245,7 @@ def import_test(handoff, output, kachinco, ffprobe='ffprobe'):
             return read_json(folder / log)
 
         invoke(['project', 'new', '--output', seed, '--name', 'CG handoff TEST',
-                '--width', scene['width'], '--height', scene['height'],
+                '--width', 1920, '--height', 1080,
                 '--duration', math.ceil(duration)], 'new.json')
         seed_hash = digest(seed)
         before = invoke(['project', 'info', seed, '--json'], 'before.json')

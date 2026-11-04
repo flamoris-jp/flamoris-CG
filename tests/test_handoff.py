@@ -225,6 +225,8 @@ class FfmpegHandoffTests(Fixture):
             calls.append(command)
             args = command[1:]
             if args[:2] == ['project', 'new']:
+                self.assertEqual(args[args.index('--width') + 1], '1920')
+                self.assertEqual(args[args.index('--height') + 1], '1080')
                 project = {'id': str(uuid4()), 'name': 'CG handoff TEST', 'assets': [],
                            'sequences': [{'id': str(uuid4()), 'tracks': [], 'handEdit': 'preserve'}]}
                 envelope = {'project': project, 'authoring': [{'clappers': []}], 'generatedAssets': []}
