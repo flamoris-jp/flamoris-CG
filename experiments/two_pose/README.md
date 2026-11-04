@@ -132,3 +132,14 @@ the **exterior silhouette**: it does not include face lines, garment seams, or
 B's fist inside the body silhouette. Finger details can simplify; correspondence
 and straight-line motion can still deform limbs. Constant stroke visibility is
 not proof of natural animation, correct anatomy, or no self-intersections.
+
+## Composite the existing color and outline frames
+
+`composite_outline.py --color /color-run/layered --outline /outline-run/frames
+--output /new/composite` multiplies matching 24-frame RGB images, preserving the
+white-backed stroke without adding another warp. The side-by-side video shows
+the colored render and its overlay. Actual inspection shows a stronger outer
+stroke, but color/outline edges disagree at intermediate poses, especially around
+arms and the coat. Their correspondence methods differ; this is a literal
+composition comparison, not a registered or repaired animation. All produced
+PNG, GIF and MP4 frames were decoded for validation.
