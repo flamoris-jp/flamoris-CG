@@ -37,6 +37,8 @@ FLAMORIS-CGは、**スクリプトでオブジェクトを作り、動かし、C
 
 **2.5Dの追加実験:** [プリン防衛戦](docs/pudding-defense-2.5d.md) では、3D背景に透過PNGのキャラクターを置き、平行投影でアニメ風の単体クリップを試します。`examples/sprite_stage.json` と `examples/pudding_defense.py` が入口です。全身スプライトの移動を扱うラフで、骨格歩行・表情・口パクはまだありません。
 
+**2ポーズ中割りの追加実験:** [手動対応点によるオフライン比較](experiments/two_pose/README.md)では、2枚の生成原画をフェード・全身メッシュ・部位別の滑らかな画素変形で比較します。24フレームの試作動画まで検証しましたが、手や服の二重線が残り、完成アニメーションとしては未受入れです。自動対応付け・線の再描画・3D回転推定は未実装。既存のシーン/JOB APIには追加していません。
+
 実験用スクリプトの [hello_motion.json](examples/hello_motion.json) は、床と球を作り、球の位置をいくつかのキーフレームで変更します。**物理演算ではなく、指定した動きの再生**です。任意のPythonコードをJSONから実行しません。
 
 事前条件: Python 3.11+、Blender（別途インストール、実行可能な `blender` コマンド）、描画する場合は利用できるCPU環境。CIはPython仕様検証とWindows/Linuxの画像・MCP境界テストを行います。Blender実機試験は[別記録](docs/preview-acceptance.md)です。
@@ -89,3 +91,4 @@ Code: [Apache License 2.0](LICENSE). Blender、フォント、モデル、素材
 ## 旧Scene Engine計画との関係
 
 Kachinco #124 / Glyph #3の旧計画は、[責任・依存関係の整理](docs/scene-engine-scope.md)と[CG #8](https://github.com/flamoris-jp/flamoris-CG/issues/8)で追跡します。クリップ内のオブジェクト・動作・シーン・出力をCGの範囲へ整理し、Glyphは形状、Kachincoは編集を保持します。独立エンジン新設、共通schema先行確定、Cinema再開は既定事項にしません。バックログの整理で、機能実装・実機受入れの追加ではありません。
+
