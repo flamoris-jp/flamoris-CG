@@ -112,3 +112,23 @@ These are drawing measurements, not recovered anatomical rotations.
 Next useful experiment: explicitly correspond **outline strokes** for one arm
 and its hand, redraw the intermediate contours, and compare with the same pixel
 warp. That isolates the remaining line/gesture problem before expanding scope.
+
+## Follow-up: outer stroke morph, without paint or dissolve
+
+`run_outline.py` thresholds dark/color foreground, closes small gaps, fills holes
+and selects the largest connected silhouette. ContourPy traces that actual
+silhouette. Seven manually chosen exposed anchors split each closed contour into
+matching arc-length segments. 1,200 matched coordinates interpolate across 24
+frames; every frame redraws one unfilled dark stroke of constant width. SVGs
+retain the exact intermediate vector coordinates. No source-color pixel warps,
+alpha dissolve or endpoint-image substitution are used in this experiment.
+
+```sh
+python experiments/two_pose/run_outline.py --a /input/pose-a.png --b /input/pose-b.png --output /new/outline
+```
+
+Observed: the outer stroke stays visible throughout the motion. This only tests
+the **exterior silhouette**: it does not include face lines, garment seams, or
+B's fist inside the body silhouette. Finger details can simplify; correspondence
+and straight-line motion can still deform limbs. Constant stroke visibility is
+not proof of natural animation, correct anatomy, or no self-intersections.
