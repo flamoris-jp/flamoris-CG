@@ -143,3 +143,32 @@ stroke, but color/outline edges disagree at intermediate poses, especially aroun
 arms and the coat. Their correspondence methods differ; this is a literal
 composition comparison, not a registered or repaired animation. All produced
 PNG, GIF and MP4 frames were decoded for validation.
+
+## Joint-driven single-arm redraw — 2026-11-05
+
+`run_joint_arm.py --output /new/joint-arm` is a separate, deliberately simplified
+redraw of the **image-right arm only**. Shoulder/elbow/wrist measurements come
+from the same manual key-pose annotations. Shoulder and forearm angles follow
+the shortest 2D angular interpolation, projected bone lengths interpolate, and
+the hand contour changes in its own rotating coordinate frame. This is not a
+recovered 3D palm rotation or a fixed-length anatomical rig.
+
+One closed sleeve polygon and one closed hand polygon each generate **both** the
+paint mask and constant-width stroke. Opaque shading is clipped to that same
+mask. An opaque convex connector behind the cuff joins the palm and sleeve.
+This avoids the disagreement produced by separately morphed color and exterior
+silhouette. The connector was enlarged to the convex hull of cuff/hand-root
+vertices after an initial run exposed 1–3 unpainted pixels at two wrist poses.
+
+The result is hand-authored flat-color artwork, not faithful recovery of the
+original coat shading, emblem, hand detail or texture. It is detached from the
+body, with no full-character occlusion handling. SVGs preserve base geometry and
+colors; PNGs additionally include clipped shading and palm crease strokes.
+
+Validation includes endpoint joint positions, angular rather than straight-line
+wrist motion, sampled polygon crossings, connected fill, holes and opaque
+interior pixels. The complete Python suite now contains 90 passing tests.
+A 48-frame/24-fps CPU output and an angle-control comparison are provided; this
+is not a Blender render or full-character acceptance. A common stroke/fill
+boundary removes the previous *registration* mismatch within this small redraw,
+while natural motion and fidelity remain separate evaluation goals.
