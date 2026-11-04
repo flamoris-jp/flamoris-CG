@@ -16,7 +16,8 @@ FLAMORIS-CGは、**スクリプトでオブジェクトを作り、動かし、C
 
 - **CGの責任:** オブジェクトの定義と参照、動作スクリプト、時間、シーン構築、描画依頼、生成したクリップと付随データ。
 - **今の実装:** 単純なJSON実験仕様の検証、Blender向けのプリミティブ・キーフレーム・カメラ・照明設定、および静止プレビュー / PNG連番 / ネイティブ .blend 出力の実験用スクリプト。Captureの共通画像処理とMcp.Coreを利用する保存済みプレビュー取得アダプター。
-- **未実装:** 本格的なモデリング、衝突・剛体物理、Glyphモーフィング実行、汎用スクリプト言語、独立レンダラー、Kachincoへの自動受け渡し、完成映像のエンコード。コードは用意されていてもBlenderでの実機受入れは別途必要。
+- **限定的な受け渡し:** 明示した1件の完成JOBのZIPを検証し、MP4化して新規のKachincoテストプロジェクトへ正規CLI importで登録する[オフライン操作](docs/kachinco-handoff.md)。コードテストと実FFmpeg fixture検証が対象で、新アダプターのLIME/Kachinco実機受入れは未完了。
+- **未実装:** 本格的なモデリング、衝突・剛体物理、Glyphモーフィング実行、汎用スクリプト言語、独立レンダラー、JOB完了時の自動取込、既存の本番プロジェクトへの受け渡し。コードは用意されていても実機受入れは別途必要。
 - **Cinemaとの区別:** [flamoris-cinema](https://github.com/flamoris-jp/flamoris-cinema) は将来の**作品全体の演出・プロジェクト統括**（現在休眠）。CGは単体で「素材クリップを作る」。Cinemaの開発は再開しない。
 - **KineticTypoとの区別:** KineticTypoは文字の動作と字幕演出。CGは物体・形状・空間の動作。共通化は実例ができてから。
 - **Blenderとの区別:** Blenderが本物のモデル、物理、マテリアル、レンダリングの実行主体。CGはその操作を限定的な宣言的スクリプトへ変換する。Blender全体の複製ではない。
@@ -55,7 +56,7 @@ blender -b --python-exit-code 1 --python blender/build_scene.py -- --spec exampl
 blender -b --python-exit-code 1 --python blender/build_scene.py -- --spec examples/hello_motion.json --output outputs/hello-frames --sequence
 ```
 
-作成するフォルダーが既存なら安全のため失敗します。対応するオブジェクトは `cube`・`uv_sphere`・明示したPNG素材を使う `sprite` に限定し、FPS、尺、数値範囲、キーフレーム数を制限します。Blenderがインストールされていなくても入力スキーマのユニットテストはできます。汎用builderはMP4をエンコードせず、連番の映像化と最終編集は制作工程 / Kachinco側で行います。
+作成するフォルダーが既存なら安全のため失敗します。対応するオブジェクトは `cube`・`uv_sphere`・明示したPNG素材を使う `sprite` に限定し、FPS、尺、数値範囲、キーフレーム数を制限します。Blenderがインストールされていなくても入力スキーマのユニットテストはできます。汎用builderはMP4をエンコードしません。完成JOBの連続PNGを映像化する別操作は[受け渡しCLI](docs/kachinco-handoff.md)を参照。最終編集・音・書き出しはKachincoの範囲です。
 
 ## 目標と進め方
 
