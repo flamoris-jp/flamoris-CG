@@ -1,0 +1,33 @@
+{
+  "native_frames": 24,
+  "native_fps": 24,
+  "preview_fps": 12,
+  "preview_frames": 66,
+  "image_size": [
+    640,
+    360
+  ],
+  "bbox_first_middle_last": [
+    [
+      80,
+      103,
+      556,
+      335
+    ],
+    [
+      80,
+      143,
+      556,
+      213
+    ],
+    [
+      80,
+      25,
+      555,
+      258
+    ]
+  ],
+  "source_transfer_sha256": "9c40b06a9eb0d6bcd54fc7aa8f154988f464b7eda4ff15a3fd6bbb95be010424",
+  "job_id": "e056f9f2-82a5-4df4-aac2-bb4a3af836f9",
+  "provenance": "Blender Cycles CPU; manually authored geometry; no original-art texture; no external model"
+}
