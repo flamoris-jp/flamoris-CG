@@ -299,3 +299,37 @@ continuously across the A/B surface switch. A regression test compares the
 projected tip extents immediately before and after the switch. This avoids a
 length pop caused by the two source drawings having different hand proportions.
 It does not guarantee identical interior linework across those two views.
+
+## Joint refinement: side thickness, wrist and coat seam — 2026-11-05
+
+`refine_original_art_joints.py --a /input/pose-a.png --b /input/pose-b.png
+--output /new/refined-joints` addresses three visible defects in the source-art
+clip without replacing its source sleeve/hand surfaces:
+
+- The edge-on hand now exposes a shaded side volume. Its depth is an authored
+  `14*sin(pi*t)^2` original-resolution pixels, tapering to zero at the front/back
+  endpoints. Source-sampled skin colors and the swept projected silhouette form
+  the side. Compressed dark face rails are suppressed near the exact edge so
+  they do not become multiple black outlines inside that new side surface.
+- The photographed sleeve cutout's baked orange wrist oval is removed while the
+  cuff fabric and dark lining remain. Its aperture is retained only as hidden
+  skin-colored coverage following the cuff warp. A six-point wrist narrows from
+  inside the cuff to the hand, replacing the old constant-width connector. This
+  is an authored transition, not a recovered anatomical wrist cross-section.
+- A donor-textured dynamic coat strip overlaps both the original body seam and
+  the sleeve's moving inner edge, filling the open underarm/shoulder boundary.
+  A deliberately selected unmarked fabric strip from B provides its color and
+  texture. Only the exterior continuation of the coat edge is inked; internal
+  overlaps remain behind the coat/sleeve. This completes unseen fabric manually.
+
+The previous isolated-arm hole check could not detect a background slit between
+arm and body. This iteration separately records unpainted samples in the new
+joint band, as well as remaining closed holes, original-head preservation and
+changes outside the explicit edit region. Tiny interpolation fragments are
+removed and pinholes up to 32 pixels are recorded/repaired; larger holes fail.
+
+New tests cover exposed side volume in the edge view, narrowing/non-crossing
+wrist geometry, opaque cloth coverage following the arm, and joint/source
+preservation in five sampled poses. All 108 Python tests pass. Output remains a
+48-frame, 24-fps CPU single-arm study, not a Blender render or anatomical model.
+Source-view switching and artistic seam/shading choices remain review points.
