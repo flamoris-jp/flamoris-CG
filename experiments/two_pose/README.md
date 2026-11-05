@@ -247,3 +247,49 @@ shows original A beside the attached-arm result. All 98 Python tests pass,
 including alpha export, fixed shoulder registration and preservation of original
 pixels/head. Actual PNG/GIF/MP4 output frames are fully decoded separately.
 Image generation here is CPU compositing; no Blender render is claimed.
+
+## Source-art finishing pass — 2026-11-05
+
+`run_original_art_arm.py --a /input/pose-a.png --b /input/pose-b.png
+--output /new/original-art` implements the four requested refinements on the
+same fixed-body/image-right-arm study:
+
+1. **Original artwork:** A's sleeve, cuff, emblem, linework and shading are cut
+   out and warped with an inverse thin-plate-spline cage driven by 2D joints.
+   There is no whole-frame color dissolve. The root/cap has reduced deformation.
+2. **Shoulder:** the manually corrected pivot is (642,625), with an original-A
+   shoulder-cap foreground patch retained. The proximal coat is anchored while
+   elbow/wrist guides move. This replaces the simplified study's higher pivot.
+3. **Missing clothing:** the old arm is cleared using an expanded manual mask.
+   A narrow, explicit region under the arm reuses B's visible coat with manually
+   matched donor coordinates; both images' hashes are retained. The surrounding
+   original A, its head and cap are preserved. This is not inferred hidden art.
+4. **Hand lines:** the dorsal surface uses original A and the palmar surface uses
+   original B, each moved relative to its original wrist and direction. The
+   surface switches at the thin edge rather than dissolving two hands. Internal
+   thumb/finger/palm lines therefore come from the source drawings. An opaque
+   source-derived silhouette outline is redrawn for readability after warping.
+
+The edge-on hand uses an authored width floor of 0.16. Below width factor 0.30,
+its projected silhouette is made continuous with a convex envelope and skin
+color sampled from the selected original. A concealed wrist connector also uses
+flat skin fill. These are declared completion assumptions, not source pixels.
+Isolated cutout fragments are removed. Enclosed pinholes of at most 32 original
+resolution pixels may be filled from nearest painted pixels; larger holes are
+rejected for geometry inspection. Repair counts are recorded per frame.
+
+Outputs are 48 motion frames, 24 fps, 720×900 MP4/PNG, plus a 560×700 GIF and a
+comparison with original A. One reusable GIF palette avoids color-table changes
+between frames and expensive per-frame palette optimization. This is CPU image
+processing, not a Blender render. No model or dependencies were installed.
+
+The current suite has 103 passing tests, including input/time bounds, identity
+preservation of original sleeve colors, fixed cap/pivot, original A/B hand view
+selection, connected opaque paint and original/head pixel preservation on
+synthetic source images. Real source-image frames are inspected separately.
+
+Remaining artistic limits: the torso, face, hair and other arm stay fixed; the
+sleeve's hidden backside reuses A rather than recovering unseen cloth; B's donor
+coat is a small warped patch; the hand-view transition and extreme edge profile
+can still need retouching. It is a finished **single-arm prototype clip**, not a
+claim that arbitrary two drawings now yield finished full-body animation.
