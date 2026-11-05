@@ -37,7 +37,7 @@ FLAMORIS-CGは、**スクリプトでオブジェクトを作り、動かし、C
 
 **2.5Dの追加実験:** [プリン防衛戦](docs/pudding-defense-2.5d.md) では、3D背景に透過PNGのキャラクターを置き、平行投影でアニメ風の単体クリップを試します。`examples/sprite_stage.json` と `examples/pudding_defense.py` が入口です。全身スプライトの移動を扱うラフで、骨格歩行・表情・口パクはまだありません。
 
-**2ポーズ中割りの追加実験:** [手動対応点によるオフライン比較](experiments/two_pose/README.md)では、2枚の生成原画をフェード・全身メッシュ・部位別の滑らかな画素変形で比較します。24フレームの試作動画まで検証しましたが、手や服の二重線が残り、完成アニメーションとしては未受入れです。自動対応付け・線の再描画・3D回転推定は未実装。既存のシーン/JOB APIには追加していません。
+**2D × CGのアニメーション研究（2026-11-05）:** [研究結果のまとめ](docs/research-notes/2026-11-05-two-pose-hybrid-animation.md)に、2枚の原画の画素変形・外周線・部位別変形から、原画を使う2D片腕とBlenderの手の回転までを記録しました。[2D片腕](experiments/two_pose/README.md)は48フレーム・720×900・24fps、[原画に合わせたBlenderの手](experiments/blender_hand_turn/SOURCE_FIT.md)は32フレーム・800×600・24fpsの透過連番を作成。後者は原画の甲・掌に手動設計の厚みを付けた2.5Dモデルです。新しい手と2Dの腕の接続、自動分解、隠れ面の自動復元、解剖学的な回転推定は未実装。既存シーン/JOB APIの機能追加ではなく、入力を限定した研究用スクリプトです。
 
 実験用スクリプトの [hello_motion.json](examples/hello_motion.json) は、床と球を作り、球の位置をいくつかのキーフレームで変更します。**物理演算ではなく、指定した動きの再生**です。任意のPythonコードをJSONから実行しません。
 
@@ -91,4 +91,5 @@ Code: [Apache License 2.0](LICENSE). Blender、フォント、モデル、素材
 ## 旧Scene Engine計画との関係
 
 Kachinco #124 / Glyph #3の旧計画は、[責任・依存関係の整理](docs/scene-engine-scope.md)と[CG #8](https://github.com/flamoris-jp/flamoris-CG/issues/8)で追跡します。クリップ内のオブジェクト・動作・シーン・出力をCGの範囲へ整理し、Glyphは形状、Kachincoは編集を保持します。独立エンジン新設、共通schema先行確定、Cinema再開は既定事項にしません。バックログの整理で、機能実装・実機受入れの追加ではありません。
+
 

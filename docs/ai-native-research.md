@@ -39,6 +39,22 @@ These are possible tests, not a commitment to implement every feature now. Do no
 
 **Compare solutions rather than counting tools.** Track time/steps, number of manual corrections, preservation of other scene state, reproducibility, portability and render cost as appropriate. Avoid benchmark claims without repeatable measurements.
 
+## Recorded study: two-pose 2D and CG hand animation — 2026-11-05
+
+The [research report](research-notes/2026-11-05-two-pose-hybrid-animation.md)
+records a concrete comparison of whole-image warps, semantic parts, original-art
+2D motion and a source-fitted closed Blender hand volume. Human observations
+about thumb overlap, the shoulder, missing fabric and the wrist drove specific
+revisions. Measured fill coverage did not by itself predict artistic fidelity.
+The native hand used existing durable render JOBs and actual frame inspection.
+
+This supports further tests of editable part boundaries, shared wrist coordinates
+and explicit completion masks. Those tool capabilities are proposed work: the
+experiment still used manual correspondences and designed hidden surfaces. It
+is not a benchmark of AI autonomy, an anatomical reconstruction method or a
+proof that arbitrary two drawings can produce finished animation. The 2D arm
+and the new Blender hand remain separate outputs awaiting integration.
+
 ## Boundary with Cinema
 
 **CG evolves how one CG scene or clip is specified, edited and generated.** It may eventually support AI writing/revising scene data and checking rendered results.
@@ -59,3 +75,4 @@ These are possible tests, not a commitment to implement every feature now. Do no
 - Distinguish present implementations, experimental observations and future hypotheses.
 
 This charter is a guide for experiments. It does not authorize deployment, GPU use, running services or resuming Cinema.
+

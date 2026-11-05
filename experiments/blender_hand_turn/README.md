@@ -1,9 +1,23 @@
-# Blender palm-turn study
+# Blender hand-turn laboratory
 
-A real, small Blender mesh test following the two-pose 2D arm experiments.
-The scope is one hand turning from its back through an edge view to its palm.
-This does not extract or texture the source drawing and is not yet integrated
-with the character's 2D sleeve.
+Two real Blender studies follow the two-pose CPU image experiments. See the
+[research report](../../docs/research-notes/2026-11-05-two-pose-hybrid-animation.md)
+for the full progression, unfavorable results and next steps.
+
+| Study | Result | Instructions / evidence |
+| --- | --- | --- |
+| Generic primitive hand | 24 native frames, 640×360, 24 fps; manually authored geometry and surface lines | Instructions below; [acceptance](acceptance.json) |
+| Source-fitted contour volume | 32 native frames, 800×600, 24 fps; original back/palm art on a closed 2.5D volume, thumb towards viewer | [Source fit](SOURCE_FIT.md); [acceptance](source-fit-acceptance.json) |
+
+The latest study retains the source drawing's finger grouping and linework. Its
+depth, silhouette correspondence and grazing-angle side colour are authored,
+not recovered anatomical structure. Neither Blender study is yet connected to
+the 2D character sleeve. The native .blend also omits the offline silhouette
+ink pass used in presentation; raw and inked PNGs are retained separately.
+
+## Initial study: generic primitive hand
+
+The remaining instructions describe the first model, without source textures.
 
 ## Authored scene
 
@@ -52,3 +66,4 @@ hand; anatomical forearm pronation and a fixed sleeve connection are not modeled
 The scene establishes visible volume and depth occlusion, not a finished anime
 hand or fidelity to the original drawing. Further work is source-matched shape,
 toon contours, a connected wrist and integration with the 2D arm.
+

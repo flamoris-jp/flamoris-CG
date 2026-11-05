@@ -5,6 +5,16 @@ character drawings and calculate intermediate poses. This is a standalone
 research script, not a production scene API, automatic animation system, or
 Blender renderer. Existing CG scene, JOB, preview and handoff paths are untouched.
 
+## Latest research checkpoint — 2026-11-05
+
+The [combined research report](../../docs/research-notes/2026-11-05-two-pose-hybrid-animation.md)
+connects these CPU image experiments to the separate
+[source-fitted Blender hand](../blender_hand_turn/SOURCE_FIT.md).
+The latest result in **this** directory remains a 48-frame original-art single
+arm on a fixed body. The new 32-frame Blender hand is a separate asset; joining
+it to that 2D arm has not been implemented. Earlier test counts and failures
+below are historical checkpoints, not a claim that every method was accepted.
+
 ## Inputs and provenance
 
 The two 1122×1402 Akino illustrations were generated earlier in the same user
@@ -333,3 +343,4 @@ wrist geometry, opaque cloth coverage following the arm, and joint/source
 preservation in five sampled poses. All 108 Python tests pass. Output remains a
 48-frame, 24-fps CPU single-arm study, not a Blender render or anatomical model.
 Source-view switching and artistic seam/shading choices remain review points.
+
