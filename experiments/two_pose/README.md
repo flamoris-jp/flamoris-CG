@@ -217,3 +217,33 @@ Tests cover preservation of the projected hand axis during twist, cross-section
 reversal, opaque connected paint in three views, hidden surface-detail strokes
 in the edge view, and concave cap triangulation area. All 94 Python tests pass.
 PNG/GIF/MP4 results use the Work CPU runtime; Blender rendering was not involved.
+
+## Attach the arm to original Akino A — 2026-11-05
+
+`run_attached_arm.py --source /input/pose-a.png --output /new/attached-arm`
+composites the existing simplified turning arm onto the fixed original
+illustration. Source A must be 1122×1402. The same manual arm/hand masks remove
+the original image-right sleeve and hand, with a seven-pixel margin and white
+background fill. A declared small flat coat patch supports the shoulder. These
+are manual cleanup assumptions; original hidden coat texture/emblem is not
+recovered. The other arm, face, hair and torso remain still.
+
+The optional transparent/open-shoulder export of `render_turn` is backward
+compatible with its existing opaque output. The arm's root cut-line is omitted,
+then the rendered RGBA arm is transformed back into original image coordinates.
+The moving shoulder is translated to the original shoulder anchor (646,590).
+The original head is restored in front with a fixed manual mask. This is a
+bounded scene-specific compositing order, not inferred general occlusion.
+
+Before resizing or encoding, each frame measures changed pixels outside the
+explicit arm/cleanup edit region and changed pixels within the protected head.
+A shoulder-center alpha probe checks coverage. This validates isolation and
+attachment coverage, not artistic seamlessness. Sleeve style mismatch and the
+simplified shoulder patch remain visible review points. The endpoint is not
+original pose B: only one arm moves on pose A's fixed body.
+
+The output has 48 motion frames at 24 fps and 560×700 pixels. Its comparison
+shows original A beside the attached-arm result. All 98 Python tests pass,
+including alpha export, fixed shoulder registration and preservation of original
+pixels/head. Actual PNG/GIF/MP4 output frames are fully decoded separately.
+Image generation here is CPU compositing; no Blender render is claimed.

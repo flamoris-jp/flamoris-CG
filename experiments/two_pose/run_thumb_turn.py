@@ -115,7 +115,7 @@ def draw_details(rgb,depth,labels,t,twist=None,enabled=True):
     return rgb,{'thumb_boundary_pixels':int(seam.sum()),'visible_detail_pixels':count}
 
 
-def render_turn(t,twist=None,details=True):
+def render_turn(t,twist=None,details=True,transparent=False,open_shoulder=False):
     g=geometry(t);rgb,depth,labels=raster_hand(t,twist)
     rgb,checks=draw_details(rgb,depth,labels,t,twist,details)
     h,w=labels.shape;canvas=Image.new('RGB',(w,h),'#e7edf3')
@@ -133,7 +133,9 @@ def render_turn(t,twist=None,details=True):
     coverage|=np.asarray(bridgemask)>0
     for name,color in [('sleeve','#f5f3f9'),('cuff','#2a2c34')]:
         q=g[name];m=mask_for(q);canvas.paste(color,(0,0,w,h),m);coverage|=np.asarray(m)>0
-        pts=[tuple(p*SS) for p in display(q)];ImageDraw.Draw(canvas).line(pts+[pts[0]],fill='#25252d',width=round(STROKE*SS),joint='curve')
+        pts=[tuple(p*SS) for p in display(q)]
+        path=pts if open_shoulder and name=='sleeve' else pts+[pts[0]]
+        ImageDraw.Draw(canvas).line(path,fill='#25252d',width=round(STROKE*SS),joint='curve')
     # Crop detailed ink to projected painted area; no detail enters background.
     pinholes=ndimage.binary_fill_holes(coverage)&~coverage
     repair_count=int(pinholes.sum())
@@ -142,6 +144,9 @@ def render_turn(t,twist=None,details=True):
         pixels=np.array(canvas);pixels[pinholes]=[245,199,163];canvas=Image.fromarray(pixels);coverage|=pinholes
     _,components=ndimage.label(coverage)
     checks.update(components=int(components),holes=int((ndimage.binary_fill_holes(coverage)&~coverage).sum()),repaired_subpixel_samples=repair_count,thumb_pixels=int((labels==2).sum()),palm_pixels=int((labels==1).sum()))
+    if transparent:
+        alpha=(np.any(np.asarray(canvas)!=[231,237,243],axis=2).astype('uint8')*255)
+        canvas=canvas.convert('RGBA');canvas.putalpha(Image.fromarray(alpha))
     return canvas.resize(SIZE,Image.Resampling.LANCZOS),checks
 
 
