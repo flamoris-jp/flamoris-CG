@@ -283,7 +283,7 @@ comparison with original A. One reusable GIF palette avoids color-table changes
 between frames and expensive per-frame palette optimization. This is CPU image
 processing, not a Blender render. No model or dependencies were installed.
 
-The current suite has 103 passing tests, including input/time bounds, identity
+The current suite has 104 passing tests, including input/time bounds, identity
 preservation of original sleeve colors, fixed cap/pivot, original A/B hand view
 selection, connected opaque paint and original/head pixel preservation on
 synthetic source images. Real source-image frames are inspected separately.
@@ -293,3 +293,9 @@ sleeve's hidden backside reuses A rather than recovering unseen cloth; B's donor
 coat is a small warped patch; the hand-view transition and extreme edge profile
 can still need retouching. It is a finished **single-arm prototype clip**, not a
 claim that arbitrary two drawings now yield finished full-body animation.
+
+The source-art hand pass additionally matches its projected longitudinal length
+continuously across the A/B surface switch. A regression test compares the
+projected tip extents immediately before and after the switch. This avoids a
+length pop caused by the two source drawings having different hand proportions.
+It does not guarantee identical interior linework across those two views.

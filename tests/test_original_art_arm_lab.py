@@ -43,6 +43,17 @@ class OriginalArtArmTests(unittest.TestCase):
             self.assertEqual(view,expected);self.assertGreaterEqual(width,.16)
             alpha=np.asarray(image.getchannel('A'))
             self.assertGreater((alpha==255).sum(),100)
+    def test_hand_length_does_not_jump_at_view_change(self):
+        from run_original_art_arm import HAND_DIRECTION,HAND_WRIST,rotation,angular_lerp
+        extents=[]
+        for t in [.499,.501]:
+            image,_,_=hand_layer(self.prepared['hand_a'],self.prepared['hand_b'],t)
+            yy,xx=np.nonzero(np.asarray(image.getchannel('A'))>128)
+            phi=angular_lerp(np.arctan2(HAND_DIRECTION[0,1],HAND_DIRECTION[0,0]),np.arctan2(HAND_DIRECTION[1,1],HAND_DIRECTION[1,0]),t)
+            wrist=joint_pose(t)[1]
+            extents.append(np.max(((np.column_stack([xx,yy])-wrist)@rotation(phi))[:,0]))
+        self.assertLess(abs(extents[1]-extents[0]),4)
+
     def test_composite_preserves_protected_pixels_and_connected_paint(self):
         for t in [0,.5,1]:
             image,c=render(self.prepared,t)

@@ -109,7 +109,15 @@ def hand_layer(hand_a,hand_b,t):
     _,w,*_=joint_pose(t)
     width=max(.16,abs(np.cos(np.pi*t)))
     # No mirroring of the source drawings: B already depicts the palmar view.
-    mat=rotation(angle)@np.diag([1.,width])@rotation(source_angle).T
+    extents=[]
+    for n,rgba in enumerate([hand_a,hand_b]):
+        y,x=np.nonzero(rgba[:,:,3]>128)
+        xy=np.column_stack([x,y])-HAND_WRIST[n]
+        ph=np.arctan2(HAND_DIRECTION[n,1],HAND_DIRECTION[n,0])
+        extents.append(float(np.max((xy@rotation(ph))[:,0])))
+    desired=(1-t)*extents[0]+t*extents[1]
+    length_scale=desired/extents[view]
+    mat=rotation(angle)@np.diag([length_scale,width])@rotation(source_angle).T
     inv=np.linalg.inv(mat);offset=HAND_WRIST[view]-inv@w
     coeff=(inv[0,0],inv[0,1],offset[0],inv[1,0],inv[1,1],offset[1])
     im=Image.fromarray(source.astype('uint8'),'RGBA').transform(SIZE,Image.Transform.AFFINE,coeff,resample=Image.Resampling.BICUBIC)
@@ -216,7 +224,7 @@ def main():
     sheet=Image.new('RGB',(3600,900),'white')
     for col,j in enumerate([0,12,24,35,47]):sheet.paste(frames[j],(col*720,0))
     save_png(sheet,args.output/'Akino-Original-Art-Arm-Contact.png')
-    report={'method':'source A sleeve TPS deformation; source A/B hand affine surface views; shoulder-cap anchoring; B coat donor patch','frames':48,'fps':24,'size':[720,900],'pivot':PIVOT.tolist(),'max_outside_edit_pixels':max(c['outside_edit_pixels'] for c in checks),'max_head_changed_pixels':max(c['head_changed_pixels'] for c in checks),'max_arm_holes':max(c['arm_hole_pixels'] for c in checks),'max_arm_components':max(c['arm_components'] for c in checks),'max_repaired_pixels':max(c['repaired_pixels'] for c in checks),'inputs':{str(p.name):hashlib.sha256(p.read_bytes()).hexdigest() for p in [args.a,args.b]},'checks':checks,'limitations':['One arm only; body and other arm fixed','Manual shoulder/cutout/donor correspondences','Hand surfaces switch near edge-on; compression floor is authored, not recovered 3D; narrow profiles use a hull and source-sampled skin fill','Hidden sleeve backside uses A artwork; coat donor B is warped and may need retouching','A hidden wrist connector is flat skin color; donor and sprite transition require visual review']}
+    report={'method':'source A sleeve TPS deformation; source A/B hand affine surface views; shoulder-cap anchoring; B coat donor patch','frames':48,'fps':24,'size':[720,900],'pivot':PIVOT.tolist(),'max_outside_edit_pixels':max(c['outside_edit_pixels'] for c in checks),'max_head_changed_pixels':max(c['head_changed_pixels'] for c in checks),'max_arm_holes':max(c['arm_hole_pixels'] for c in checks),'max_arm_components':max(c['arm_components'] for c in checks),'max_repaired_pixels':max(c['repaired_pixels'] for c in checks),'inputs':{str(p.name):hashlib.sha256(p.read_bytes()).hexdigest() for p in [args.a,args.b]},'checks':checks,'limitations':['One arm only; body and other arm fixed','Manual shoulder/cutout/donor correspondences','Hand surfaces switch near edge-on; compression floor is authored, not recovered 3D; narrow profiles use a hull and source-sampled skin fill','Hidden sleeve backside uses A artwork; coat donor B is warped and may need retouching','A hidden wrist connector is flat skin color; source-view details still change at the edge, though projected hand length is matched continuously']}
     (args.output/'report.json').write_text(json.dumps(report,indent=2)+'\n');print({k:v for k,v in report.items() if k!='checks'})
 
 if __name__=='__main__':main()
