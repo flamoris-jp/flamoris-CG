@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "research_date": "2026-11-05",
+  "purpose": "Identify artifacts saved in the production session; media bytes and private locations are not committed",
+  "artifacts": [
+    {
+      "stage": "2d-arm",
+      "file_name": "Akino-Arm-Joint-Refined.mp4",
+      "bytes": 249951,
+      "sha256": "8bede12fc91328c45a824bf492772c1f867025e7b6ac46635df95dc6a5f3dc03"
+    },
+    {
+      "stage": "2d-arm",
+      "file_name": "Akino-Arm-Joint-Before-After.mp4",
+      "bytes": 476530,
+      "sha256": "010a28b71d99cdff960f0b610b73872067b34b8e4d627fe57fa007ee1505cf84"
+    },
+    {
+      "stage": "2d-arm",
+      "file_name": "Akino-Arm-Joint-Refined-Production.zip",
+      "bytes": 32345373,
+      "sha256": "bdf9d481977a957bcb11d17fc3d9be07a2fdb40ea2931aa748c91bb6f58e4d5d"
+    },
+    {
+      "stage": "source-fitted-blender-hand",
+      "file_name": "Akino-Source-Matched-Hand.gif",
+      "bytes": 1356257,
+      "sha256": "f6f45a43093797629b669a7c6f4d40cb66020835008bcfea603acb54cd369b1e"
+    },
+    {
+      "stage": "source-fitted-blender-hand",
+      "file_name": "Akino-Source-Matched-Hand.mp4",
+      "bytes": 257320,
+      "sha256": "da771cd50c413ba81a515756edb547dfc15471d05139ccdb1411bfca7973a9dd"
+    },
+    {
+      "stage": "source-fitted-blender-hand",
+      "file_name": "Akino-Source-Matched-Hand-Comparison.png",
+      "bytes": 117942,
+      "sha256": "aa6b67d770843de90511d2ab398a727b5e8a3423a0e2e50d3d457dc11c23fa90"
+    },
+    {
+      "stage": "source-fitted-blender-hand",
+      "file_name": "Akino-Source-Matched-Hand.blend",
+      "bytes": 493040,
+      "sha256": "3d827c38c23c9c2cf83a6ad65b54fc5dc1a59a10fe7fdd339444f20ef6db3b23"
+    },
+    {
+      "stage": "source-fitted-blender-hand",
+      "file_name": "Akino-Source-Matched-Hand-Experiment.zip",
+      "bytes": 7880064,
+      "sha256": "e809372af4639e6c754f4ad1f420a4c9dfa0f35bd148d89dccb0bd6f8a4b5c6b"
+    }
+  ]
+}

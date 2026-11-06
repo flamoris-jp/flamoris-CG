@@ -13,6 +13,9 @@ dependencies = []
 [project.optional-dependencies]
 # Isolated notification experiment; do not install into Hub's MCP 2 environment.
 events = ["mcp==1.30.0", "uvicorn>=0.31,<1"]
+# Offline, manually annotated image interpolation experiment only.
+two-pose-lab = ["numpy>=2,<3", "scipy>=1.14,<2", "Pillow>=11,<13", "contourpy>=1.3,<2"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+

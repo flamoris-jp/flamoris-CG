@@ -1,0 +1,47 @@
+{
+  "job_id": "029375b4-cb1a-4dbc-b872-af830f88bed4",
+  "status": "succeeded",
+  "native_frames": 32,
+  "native_fps": 24,
+  "preview_fps": 16,
+  "preview_frames": 78,
+  "size": [
+    800,
+    600
+  ],
+  "bbox_first_edge_last": [
+    [
+      161,
+      307,
+      529,
+      564
+    ],
+    [
+      191,
+      325,
+      590,
+      403
+    ],
+    [
+      172,
+      42,
+      644,
+      418
+    ]
+  ],
+  "nonmanifold_edges": 0,
+  "source_hashes": [
+    "570ae288d44043f12483e4dd19b98b5d3f8bda00b65bff20de4a3937f6cbd6c8",
+    "913672bad7c2c82a14d31ee27a67a6f0c9919717187757854232770d58d3db01"
+  ],
+  "outline_pass": "2 pixels alpha dilation under real RGBA render; raw and inked frames kept",
+  "limitations": [
+    "Authored silhouette correspondence and thickness; not anatomical 3D reconstruction",
+    "Shape keys interpolate between two inconsistent drawn views",
+    "Forearm and sleeve are not modeled"
+  ],
+  "repository_checks": "111 unit tests passed; fitting tests rerun after optional dependency guard; scene validator passed",
+  "geometry_check": "101 shape-key samples have positive surface face area; native mesh has 0 nonmanifold edges",
+  "inspection": "All 32 frames inspected; no empty frames or camera clipping; endpoint art correspondence visible",
+  "grazing_material_rule": "original surface art blends to authored skin colour at abs(cos(roll)) 0.12..0.52"
+}
