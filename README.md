@@ -69,6 +69,16 @@ blender -b --python-exit-code 1 --python blender/build_scene.py -- --spec exampl
 
 既存のCinema実験にはBlender 5.2.3のCPU/HIP描画、Glyph形状、複数視点、Flamenco、Kachinco受け渡しの証跡がありますが、**この新リポジトリで再検証済みとはみなしません**。移植や依存追加は個別の必要性を確認してから。
 
+## CI実行方針
+
+自動CIはPull Requestの作成・更新時に実行します。ブランチへのpushとmainへのマージ後には同じ検証を自動で繰り返しません。各workflowの手動実行（`workflow_dispatch`）で、PRのないブランチやmainも確認できます。mainへはPRで検証してからマージしてください。
+
+- Python仕様検証はWindows/Linux × Python 3.11/3.13の4ジョブと、実FFmpegの受け渡し検証1ジョブを維持します。
+- プレビュー検証はWindows/Linuxの両方でビルド・テスト・publish・実MCP stdio検証を行います。PRではpublishしたバンドルをその実行内で検証し、Actions成果物として保存しません。
+- ダウンロード用バンドルが必要な場合は、Actionsの **CG preview MCP → Run workflow** で対象ブランチを指定して手動実行します。成功したバンドルは3日間保存します。
+- 同じworkflow・イベント・PR（手動実行ではブランチ）の古い実行は、新しい実行に置き換えてキャンセルします。別のPRや別workflowは互いにキャンセルしません。
+- メディア保存禁止のPRチェックも継続します。CIの成功はBlender実機・GPU描画の受入れとは別です。
+
 ## 方針
 
 - Windows / Linuxの両方で扱えるデータ・コードを優先し、ローカルの専用パス、GPU名、サーバー構成を固定しない。
