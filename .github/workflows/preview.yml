@@ -1,7 +1,12 @@
 name: CG preview MCP
 on:
-  push:
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 jobs:
@@ -42,7 +47,10 @@ jobs:
       - name: Test actual Core pipe and stdio using official MCP client
         working-directory: cg
         run: python tools/test_preview_stdio.py --executable artifacts/bundle/preview/Flamoris.Cg.Preview${{ matrix.ext }}
-      - uses: actions/upload-artifact@v4
+      - name: Save preview bundle only when requested manually
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
         with:
           name: cg-preview-${{ matrix.rid }}
           path: cg/artifacts/bundle/
+          retention-days: 3
