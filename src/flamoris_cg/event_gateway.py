@@ -16,6 +16,19 @@ from .job_events import CallbackError, JobEvents
 from .render_jobs import JobConfig, RenderJobs
 
 
+def _job_events(config, jobs, *, post=None):
+    # Operator configuration only; never accept a filesystem root from MCP input.
+    options = {}
+    if "events_state_root" in config:
+        root = config["events_state_root"]
+        if not isinstance(root, str) or not root or not Path(root).is_absolute():
+            raise ValueError("absolute event state root required")
+        options["state_root"] = root
+    if post is not None:
+        options["post"] = post
+    return JobEvents(jobs, config["owner"], **options)
+
+
 def create_app(config, *, post=None):
     # Optional dependencies are deliberately imported only by this entrypoint.
     from mcp import ClientSession, StdioServerParameters, types
@@ -32,7 +45,7 @@ def create_app(config, *, post=None):
     if len(token) < 32 or any(c.isspace() for c in token):
         raise ValueError("private random ingress token required")
     jobs = RenderJobs(JobConfig(**json.loads(Path(config["jobs_config"]).read_text())))
-    events = JobEvents(jobs, config["owner"], post=post) if post else JobEvents(jobs, config["owner"])
+    events = _job_events(config, jobs, post=post)
     server = Server("Blender with CG job events", version="0.1.0")
     upstream = {}
     serial = asyncio.Lock()
