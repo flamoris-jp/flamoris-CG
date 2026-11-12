@@ -16,8 +16,9 @@ This change does not alter the .NET read-only `preview.get` boundary.
 
 - RenderJobs owns job IDs, input/ownership checks, status and Flamenco backoff.
 - Flamenco owns execution and Blender process cleanup.
-- JobEvents owns subscriptions and a small durable delivery outbox, in the same
-  private local state root as its one RenderJobs authority.
+- JobEvents owns subscriptions and a small durable delivery outbox. By default
+  these share the local RenderJobs state root; an operator may select a separate
+  private root when Blender and the notification gateway use different users.
 - The official Python MCP SDK owns Streamable HTTP and its stdio client.
 - The gateway forwards installed Blender MCP tools and rich results once,
   through a clean-environment SDK stdio session. It never copies Blender's GPL
@@ -51,10 +52,27 @@ is trusted operator data and contains:
 {
   "owner": "one-local-operator",
   "jobs_config": "/private/render-jobs-config.json",
+  "events_state_root": "/private/notification-state",
   "token_file": "/private/random-ingress-token",
   "upstream_command": "/trusted/clean-environment-blender-stdio-launcher"
 }
 ```
+
+`events_state_root` is optional, absolute, operator-only configuration. It places
+`events.sqlite3` and its SQLite sidecars beneath a separately protected local
+directory; RenderJobs retains its existing job database, IDs and backoff. Omit
+the key to preserve the previous database location. The event directory and
+database must not have symlink/reparse components. A separate path alone does
+not restrict another process: apply filesystem and service permissions too.
+
+For an existing installation, stop the gateway before switching this setting.
+Back up its SQLite database consistently, including subscriptions and outbox,
+and restore it into the selected private root. Merely setting a new path creates
+an empty notification database and does not migrate existing subscriptions.
+Retain the old database only in a protected backup; do not expose a secret-bearing
+copy when making the job directory accessible to Blender. Keep the gateway's
+own jobs configuration private and independently protected from Blender writes.
+Verify owner identity, preserved records and startup before accepting the move.
 
 The process sets umask 0077 and binds **127.0.0.1 only**. Every HTTP request,
 including event discovery and subscription, requires the same private Bearer

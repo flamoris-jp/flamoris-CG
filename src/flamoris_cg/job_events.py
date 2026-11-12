@@ -11,6 +11,7 @@ import hmac
 import http.client
 import ipaddress
 import json
+from pathlib import Path
 import secrets
 import socket
 import sqlite3
@@ -109,11 +110,16 @@ class CallbackError(Exception):
 
 
 class JobEvents:
-    def __init__(self, jobs, owner, post=webhook_post, clock=time.time):
+    def __init__(self, jobs, owner, post=webhook_post, clock=time.time, *, state_root=None):
         if not isinstance(owner, str) or not 1 <= len(owner) <= 64:
             raise ValueError("one configured owner required")
         self.jobs, self.owner, self.post, self.clock = jobs, owner, post, clock
-        self.path = contained(jobs.state, jobs.state / "events.sqlite3")
+        root = jobs.state if state_root is None else Path(state_root)
+        if not root.is_absolute():
+            raise ValueError("absolute event state root required")
+        self.state = contained(root, root)
+        self.state.mkdir(mode=0o700, parents=True, exist_ok=True)
+        self.path = contained(self.state, self.state / "events.sqlite3")
         with self.db() as db:
             db.execute("CREATE TABLE IF NOT EXISTS identity (owner TEXT NOT NULL)")
             row = db.execute("SELECT owner FROM identity").fetchone()
@@ -126,7 +132,7 @@ class JobEvents:
 
     @contextmanager
     def db(self):
-        contained(self.jobs.state, self.path)
+        contained(self.state, self.path)
         db = sqlite3.connect(self.path, timeout=15)
         try:
             db.execute("BEGIN IMMEDIATE")

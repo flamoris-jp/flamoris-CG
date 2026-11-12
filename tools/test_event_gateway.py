@@ -45,6 +45,8 @@ async def check(config_path, job_id):
         original["state_root"] = str(temp/"state")
         (temp/"jobs.json").write_text(json.dumps(original))
         config["jobs_config"] = str(temp/"jobs.json")
+        # Override even an explicitly configured production notification root.
+        config["events_state_root"] = str(temp/"state")
         app = create_app(config, post=receiver)
         token = Path(config["token_file"]).read_text().strip()
         headers = {"Authorization": "Bearer "+token,

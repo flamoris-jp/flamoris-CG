@@ -5,6 +5,7 @@ import hmac
 import json
 from pathlib import Path
 import socket
+import sqlite3
 import sys
 import unittest
 from uuid import uuid4
@@ -12,6 +13,7 @@ from uuid import uuid4
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/"src"))
 from flamoris_cg.job_events import (JobEvents, EVENT, CallbackError, callback_address,
                                    signing_key, signed_headers)
+from flamoris_cg.event_gateway import _job_events
 import test_render_jobs as fixtures
 
 
@@ -153,6 +155,90 @@ class EventTests(unittest.TestCase):
     def test_canceled_is_terminal_event(self):
         self.subscribe(); self.complete("canceled"); self.events.tick()
         self.assertEqual(json.loads(self.receiver.calls[-1][1])["data"]["status"], "canceled")
+
+    def test_separate_state_keeps_legacy_database_untouched(self):
+        legacy = self.events
+        private = self.fixture.root / "private-events"
+        self.events = JobEvents(self.jobs, "operator", self.receiver, self.clock,
+                               state_root=private)
+        self.subscribe()
+        self.assertEqual(self.events.path, private / "events.sqlite3")
+        with legacy.db() as db:
+            self.assertEqual(db.execute("SELECT count(*) FROM subscriptions").fetchone()[0], 0)
+        self.complete()
+        again = JobEvents(self.jobs, "operator", self.receiver, self.clock,
+                          state_root=private)
+        self.assertEqual(again.tick(), {"delivered": 1})
+        self.assertEqual(self.jobs.namespace, self.fixture.api.namespace)
+
+    def test_database_backup_preserves_subscription_retry_and_event_identity(self):
+        self.subscribe(); self.complete()
+        self.receiver.status = 429; self.receiver.retry = "120"
+        self.events.tick()
+        original = self.receiver.calls[-1]
+        private = self.fixture.root / "private-events"
+        private.mkdir()
+        # No active writer during this operator-controlled fixture migration.
+        with sqlite3.connect(self.events.path) as source:
+            with sqlite3.connect(private / "events.sqlite3") as target:
+                source.backup(target)
+        self.events = JobEvents(self.jobs, "operator", self.receiver, self.clock,
+                               state_root=private)
+        self.assertEqual(self.events.tick(), {"delivered": 0})
+        self.clock.advance(121); self.receiver.status = 204
+        self.assertEqual(self.events.tick(), {"delivered": 1})
+        self.assertEqual(original[1], self.receiver.calls[-1][1])
+        self.assertEqual(original[2]["webhook-id"],
+                         self.receiver.calls[-1][2]["webhook-id"])
+
+    def test_separate_state_owner_mismatch_is_rejected(self):
+        private = self.fixture.root / "private-events"
+        JobEvents(self.jobs, "operator", self.receiver, self.clock, state_root=private)
+        with self.assertRaises(ValueError):
+            JobEvents(self.jobs, "other", self.receiver, self.clock, state_root=private)
+
+    def test_separate_state_requires_absolute_path(self):
+        with self.assertRaisesRegex(ValueError, "absolute"):
+            JobEvents(self.jobs, "operator", state_root="relative-event-state")
+
+    def test_separate_state_rejects_symlink_root(self):
+        private = self.fixture.root / "private-events"
+        private.mkdir()
+        alias = self.fixture.root / "event-alias"
+        try:
+            alias.symlink_to(private, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            self.skipTest("symlinks unavailable")
+        with self.assertRaises(ValueError):
+            JobEvents(self.jobs, "operator", state_root=alias)
+
+    def test_separate_state_rechecks_database_path(self):
+        private = self.fixture.root / "private-events"
+        events = JobEvents(self.jobs, "operator", state_root=private)
+        saved = private / "saved.sqlite3"
+        events.path.rename(saved)
+        try:
+            events.path.symlink_to(saved)
+        except (OSError, NotImplementedError):
+            self.skipTest("symlinks unavailable")
+        with self.assertRaises(ValueError):
+            with events.db():
+                pass
+
+    def test_gateway_selects_operator_event_root_and_preserves_legacy_default(self):
+        legacy = _job_events({"owner": "operator"}, self.jobs, post=self.receiver)
+        self.assertEqual(legacy.state, self.jobs.state)
+        private = self.fixture.root / "private-events"
+        separated = _job_events({"owner": "operator", "events_state_root": str(private)},
+                                self.jobs, post=self.receiver)
+        self.assertEqual(separated.state, private)
+        self.assertIs(separated.post, self.receiver)
+
+    def test_gateway_rejects_invalid_explicit_event_roots(self):
+        for root in (None, "", 123, "relative-state"):
+            with self.subTest(root=root), self.assertRaises(ValueError):
+                _job_events({"owner": "operator", "events_state_root": root},
+                            self.jobs, post=self.receiver)
 
 
 class AddressTests(unittest.TestCase):
